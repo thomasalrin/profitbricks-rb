@@ -1,3 +1,9 @@
+=== 0.9.1 / 2012-05-16
+
+* 1 bug fix:
+
+  * Passing the data_center_id when running Server.create, #fixes 6
+
 === 0.9.0 / 2012-04-12
 
 * 1 major enhancement:
