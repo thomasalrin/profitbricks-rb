@@ -58,7 +58,7 @@ module Profitbricks
         raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if options[:os_type] and !['WINDOWS', 'OTHER'].include? options[:os_type]
         xml = "<arg0>"
         xml += get_xml_and_update_attributes options, 
-                    [:cores, :ram, :name, :boot_from_storage_id, :boot_from_image_id, :os_type, :internet_access, :lan_id]
+                    [:cores, :ram, :name, :boot_from_storage_id, :boot_from_image_id, :os_type, :internet_access, :lan_id, :data_center_id]
         xml += "</arg0>"
         response = Profitbricks.request :create_server, xml
         self.find(:id => response.to_hash[:create_server_return][:return][:server_id])
