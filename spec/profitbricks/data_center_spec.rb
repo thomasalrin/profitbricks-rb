@@ -54,6 +54,14 @@ describe Profitbricks::DataCenter do
     dc.provisioning_state.should == 'AVAILABLE'
   end
 
+  it "should return true on provisioned?" do
+    savon.expects(:get_data_center).returns(:two_servers_with_storage)
+    dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    savon.expects(:get_data_center_state).returns(:success)
+    savon.expects(:get_data_center).returns(:two_servers_with_storage)
+    dc.provisioned?.should == true
+  end
+  
   it "should wait for provisioning to finish" do
     savon.expects(:get_data_center).returns(:two_servers_with_storage)
     dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")

@@ -52,13 +52,24 @@ module Profitbricks
       Server.create(options.merge(:data_center_id => self.id))
     end
 
-    def wait_for_provisioning
+    # Checks if the Data Center is successfully provisioned
+    #
+    # @return [Boolean] true if the Data Center is provisioned
+    def provisioned?
       self.update_state
-      while @provisioning_state != 'AVAILABLE'
-        self.update_state
+      if @provisioning_state == 'AVAILABLE'
+        self.reload
+        true
+      else
+        false
+      end
+    end
+
+    # Blocks until the Data Center is provisioned
+    def wait_for_provisioning
+      while !self.provisioned?
         sleep 1
       end
-      self.reload
     end
 
     class << self
