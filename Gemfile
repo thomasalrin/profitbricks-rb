@@ -1,5 +1,5 @@
 source :rubygems
-gem 'savon'
+gem 'savon', '1.2.0'
 
 group :test, :development do 
   gem 'json'

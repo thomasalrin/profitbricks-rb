@@ -22,7 +22,7 @@ if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ruby'
 
     self.readme_file = 'README.md'
     self.history_file = 'CHANGELOG.md'
-    self.extra_deps << ["savon"]
+    self.extra_deps << ["savon", "1.2.0"]
   end
 
   task :prerelease => [:clobber, :check_manifest, :test]
