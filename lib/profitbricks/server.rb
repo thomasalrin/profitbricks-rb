@@ -37,6 +37,21 @@ module Profitbricks
       return true if response.to_hash[:update_server_response][:return]
     end
 
+    # Checks if the Server is running
+    #
+    # @return [Boolean] true if the Server is running, false otherwise
+    def running?
+      self.reload
+      self.virtual_machine_state == "RUNNING"
+    end
+
+    # Blocks until the Server is running
+    def wait_for_running
+      while !self.running?
+        sleep 1
+      end
+    end
+
     class << self
       # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a 
       # boot device and connect the server to an existing LAN or the Internet.

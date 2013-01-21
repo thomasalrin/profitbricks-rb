@@ -52,9 +52,9 @@ module Profitbricks
       Server.create(options.merge(:data_center_id => self.id))
     end
 
-    # Checks if the Data Center is successfully provisioned
+    # Checks if the Data Center was successfully provisioned
     #
-    # @return [Boolean] true if the Data Center is provisioned
+    # @return [Boolean] true if the Data Center was provisioned, false otherwise
     def provisioned?
       self.update_state
       if @provisioning_state == 'AVAILABLE'

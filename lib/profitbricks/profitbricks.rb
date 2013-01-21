@@ -16,8 +16,8 @@ module Profitbricks
     HTTPI.log = false
 
     @client = Savon::Client.new do |wsdl, http|
-      wsdl.endpoint = "https://api.profitbricks.com/1.1"
-      wsdl.document = "https://api.profitbricks.com/1.1/wsdl"
+      wsdl.endpoint = "https://api.profitbricks.com/1.2"
+      wsdl.document = "https://api.profitbricks.com/1.2/wsdl"
       if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
         puts "Warning: SSL certificate verification has been disabled"
         http.auth.ssl.verify_mode = :none
