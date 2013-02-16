@@ -1,3 +1,8 @@
+=== 0.9.5 / 2013-02-16
+
+* 1 bug fix:
+  * Cast the passed options to Server#create before checking for validity  
+
 === 0.9.1 / 2012-05-16
 
 * 1 bug fix:

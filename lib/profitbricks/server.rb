@@ -69,7 +69,7 @@ module Profitbricks
       # @return [Server] The created virtual server
       def create(options = {})
         raise ArgumentError.new("You must provide :cores and :ram") if options[:ram].nil? and options[:cores].nil?
-        raise ArgumentError.new(":ram has to be at least 256MiB and a multiple of it") if options[:ram] < 256 or (options[:ram] % 256) > 0
+        raise ArgumentError.new(":ram has to be at least 256MiB and a multiple of it") if options[:ram].to_i < 256 or (options[:ram].to_i % 256) > 0
         raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if options[:os_type] and !['WINDOWS', 'OTHER'].include? options[:os_type]
         xml = "<arg0>"
         xml += get_xml_and_update_attributes options, 
