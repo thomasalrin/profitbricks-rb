@@ -2,6 +2,7 @@
     "get_server_response": {
         "@xmlns:ns2": "http://ws.api.profitbricks.com/",
         "return": {
+            "availability_zone": "AUTO",
             "connected_storages": {
                 "bus_type": "VIRTIO",
                 "device_number": "900",
