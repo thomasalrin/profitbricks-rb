@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 gem 'savon', '1.2.0'
 
 group :test, :development do
