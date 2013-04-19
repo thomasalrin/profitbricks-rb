@@ -68,7 +68,7 @@ module Profitbricks
     # Blocks until the Data Center is provisioned
     def wait_for_provisioning
       while !self.provisioned?
-        sleep 1
+        sleep Profitbricks::Config.polling_interval
       end
     end
 

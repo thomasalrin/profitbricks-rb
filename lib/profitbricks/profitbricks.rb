@@ -6,6 +6,7 @@ module Profitbricks
     Profitbricks::Config.save_responses = false
     Profitbricks::Config.log = false
     Profitbricks::Config.global_classes = true
+    Profitbricks::Config.polling_interval = 1
     yield Profitbricks::Config
 
     Savon.configure do |config|
