@@ -1,7 +1,7 @@
-source :rubygems
+source 'https://rubygems.org'
 gem 'savon', '1.2.0'
 
-group :test, :development do 
+group :test, :development do
   gem 'json'
   gem 'rspec'
   gem 'savon_spec'
