@@ -87,10 +87,14 @@ module Profitbricks
       # Creates and saves a new, empty Virtual Data Center.
       #
       # @param [Hash] options 
-      # @option options [String] :name Name of the Virtual Data Center (can not start with or contain (@, /, \\, |, ", '))
+      # @option options [String] :name   Name of the Virtual Data Center (can not start with or contain (@, /, \\, |, ", '))
+      # @option options [String] :region Select region to create the data center (NORTH_AMERICA, EUROPE, DEFAULT). If DEFAULT or empty, the Virtual Data Center will be created in the default region of the user
       # @return [DataCenter] The newly created Virtual Data Center
       def create(options)
-        response = Profitbricks.request :create_data_center, "<dataCenterName>#{options[:name]}</dataCenterName>"
+        raise ArgumentError.new(":region has to be one of 'DEFAULT', 'NORTH_AMERICA', or 'EUROPE'") if options[:region] and !['DEFAULT', 'EUROPE', 'NORTH_AMERICA'].include? options[:region]
+        xml = "<dataCenterName>#{options[:name]}</dataCenterName>"
+        xml += get_xml_and_update_attributes options, [:region]
+        response = Profitbricks.request :create_data_center, xml
         self.find(:id => response.to_hash[:create_data_center_response][:return][:data_center_id] )
       end
 
