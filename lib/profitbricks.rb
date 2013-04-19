@@ -13,7 +13,7 @@ require 'profitbricks/firewall'
 require 'profitbricks/rule'
 
 module Profitbricks
-  VERSION = '0.9.5'
+  VERSION = '0.9.6'
 end
 
 PB = Profitbricks
