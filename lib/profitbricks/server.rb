@@ -50,7 +50,7 @@ module Profitbricks
     # Blocks until the Server is running
     def wait_for_running
       while !self.running?
-        sleep 1
+        sleep Profitbricks::Config.polling_interval
       end
     end
 
