@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'savon', '1.2.0'
+gem 'savon'
 
 group :test, :development do
   gem 'json'
@@ -7,9 +7,9 @@ group :test, :development do
   gem 'savon_spec'
   gem 'simplecov', :require => false
   gem 'rake'
-  gem 'ZenTest'
+  gem 'guard'
+  gem 'guard-rspec'
   platforms :mri do
-    gem 'autotest-fsevent'
     # Temporary fix till hoe works with rbx in 1.9 mode
     gem 'hoe'
     gem 'hoe-git'

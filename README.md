@@ -8,7 +8,7 @@
 A Ruby client for the ProfitBricks API.
 
 ## Dependencies
-A Ruby interpreter (MRI 1.8.7/1.9.2/1.9.3, JRuby 1.8/1.9 and Rubinius 1.8/1.9).
+A Ruby interpreter (MRI 1.9.2/1.9.3/2.0.0, JRuby 1.8/1.9 and Rubinius 1.8/1.9).
 
 To get the SSL certificate verification on JRuby 1.9 to work (at least on ubuntu/debian) export the following environment variable:
 
