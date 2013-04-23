@@ -52,6 +52,18 @@ module Profitbricks
       Server.create(options.merge(:data_center_id => self.id))
     end
 
+    # Creates a Storage in the current Virtual Data Center, automatically sets the :data_center_id
+    # @see Profitbricks::Storage#create
+    def create_storage(options)
+      Storage.create(options.merge(:data_center_id => self.id))
+    end
+
+    # Creates a Load Balancer in the current Virtual Data Center, automatically sets the :data_center_id
+    # @see Profitbricks::LoadBalancer#create
+    def create_load_balancer(options)
+      LoadBalancer.create(options.merge(:data_center_id => self.id))
+    end
+
     # Checks if the Data Center was successfully provisioned
     #
     # @return [Boolean] true if the Data Center was provisioned, false otherwise
