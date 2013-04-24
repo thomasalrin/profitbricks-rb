@@ -31,8 +31,11 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def register_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:server_ids => servers.collect { |s| s.id }.join(','), :load_balancer_id=> self.id}
-      xml = get_xml_and_update_attributes options, [:server_ids, :load_balancer_id]
+      options = {:load_balancer_id => self.id}
+      xml = get_xml_and_update_attributes options, [:load_balancer_id]
+      servers.each do |server|
+        xml += "<serverIds>#{server.id}</serverIds>"
+      end
       response = Profitbricks.request :register_servers_on_load_balancer, xml
       update_attributes(response.to_hash[:register_servers_on_load_balancer_response][:return])
       return true if response.to_hash[:register_servers_on_load_balancer_response][:return]
@@ -48,8 +51,11 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def deregister_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:server_ids => servers.collect { |s| s.id }.join(','), :load_balancer_id=> self.id}
-      xml = get_xml_and_update_attributes options, [:server_ids, :load_balancer_id]
+      options = {:load_balancer_id => self.id}
+      xml = get_xml_and_update_attributes options, [:load_balancer_id]
+      servers.each do |server|
+        xml += "<serverIds>#{server.id}</serverIds>"
+      end
       response = Profitbricks.request :deregister_servers_on_load_balancer, xml
       return true if response.to_hash[:deregister_servers_on_load_balancer_response][:return]
     end
@@ -60,8 +66,11 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def activate_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:server_ids => servers.collect { |s| s.id }.join(','), :load_balancer_id=> self.id}
-      xml = get_xml_and_update_attributes options, [:server_ids, :load_balancer_id]
+      options = {:load_balancer_id => self.id}
+      xml = get_xml_and_update_attributes options, [:load_balancer_id]
+      servers.each do |server|
+        xml += "<serverIds>#{server.id}</serverIds>"
+      end
       response = Profitbricks.request :activate_load_balancing_on_servers, xml
       return true if response.to_hash[:activate_load_balancing_on_servers_response][:return]
     end
@@ -72,8 +81,11 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def deactivate_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:server_ids => servers.collect { |s| s.id }.join(','), :load_balancer_id=> self.id}
-      xml = get_xml_and_update_attributes options, [:server_ids, :load_balancer_id]
+      options = {:load_balancer_id => self.id}
+      xml = get_xml_and_update_attributes options, [:load_balancer_id]
+      servers.each do |server|
+        xml += "<serverIds>#{server.id}</serverIds>"
+      end
       response = Profitbricks.request :deactivate_load_balancing_on_servers, xml
       return true if response.to_hash[:deactivate_load_balancing_on_servers_response][:return]
     end
@@ -104,9 +116,13 @@ module Profitbricks
       # @option options [Array<Server>] :servers Array of servers to connect to the LoadBalancer
       # @return [LoadBalancer] The created LoadBalancer
       def create(options = {})
-        options[:server_ids] = options[:servers].collect { |s| s.id }.join(',')
         xml = "<arg0>"
-        xml += get_xml_and_update_attributes options, [:data_center_id, :lan_id, :ip, :name, :algorithm, :server_ids]
+        xml += get_xml_and_update_attributes options, [:data_center_id, :lan_id, :ip, :name, :algorithm]
+        unless options[:servers].nil?
+          options[:servers].each do |server|
+            xml += "<serverIds>#{server.id}</serverIds>"
+          end
+        end
         xml += "</arg0>"
         response = Profitbricks.request :create_load_balancer, xml
         self.find(:id => response.to_hash[:create_load_balancer_response][:return][:load_balancer_id])
