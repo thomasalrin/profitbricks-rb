@@ -12,7 +12,7 @@ module Profitbricks
     Savon.configure do |config|
       config.raise_errors = false 
       config.log = Profitbricks::Config.log
-
+      config.pretty_print_xml = true
     end
     HTTPI.log = false
 
