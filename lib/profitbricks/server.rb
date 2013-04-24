@@ -53,6 +53,12 @@ module Profitbricks
       end
     end
 
+    # Creates a Nic for the current Server, automatically sets the :server_id
+    # @see Profitbricks::Nic#create
+    def create_nic(options)
+      Nic.create(options.merge(:server_id => self.id))
+    end
+
     class << self
       # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a 
       # boot device and connect the server to an existing LAN or the Internet.
