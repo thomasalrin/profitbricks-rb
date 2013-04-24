@@ -13,10 +13,11 @@ module Profitbricks
     #
     # @param [Hash] options Parameters to connect the Storage
     # @option options [:server_id] Identifier of the target virtual server (required) 
-    # @option options [:bus_type] Bus type to which the storage will be connected. Type can be IDE, SCSI or VIRTIO (required)
+    # @option options [:bus_type] Bus type to which the storage will be connected. Type can be IDE or VIRTIO. Default: VIRTIO
     # @option options [:device_number] Defines the device number of the virtual storage. If no device number is set, a device number will be automatically assigned 
     # @return [Boolean] true on success, false otherwise
     def connect(options = {})
+      raise ArgumentError.new(":bus_type has to be either 'IDE' or 'VIRTIO'") if options[:bus_type] and !['IDE', 'VIRTIO'].include? options[:bus_type]
       xml = "<arg0>"
       xml += get_xml_and_update_attributes options.merge(:storage_id => self.id), [:server_id, :storage_id, :bus_type, :device_number]
       xml += "</arg0>"
