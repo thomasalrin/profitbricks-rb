@@ -5,7 +5,7 @@ group :test, :development do
   gem 'json'
   gem 'rspec'
   gem 'savon_spec'
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
   gem 'rake'
   gem 'guard'
   gem 'guard-rspec'
