@@ -76,7 +76,7 @@ module Profitbricks
       # @option options [String]  :os_type Sets the OS type of the server. (WINDOWS, OTHER) If left empty, the server will inherit the OS Type of its selected boot image / storage.
       # @return [Server] The created virtual server
       def create(options = {})
-        raise ArgumentError.new("You must provide :cores and :ram") if options[:ram].nil? and options[:cores].nil?
+        raise ArgumentError.new("You must provide :cores and :ram") if options[:ram].nil? or options[:cores].nil?
         raise ArgumentError.new(":ram has to be at least 256MiB and a multiple of it") if options[:ram].to_i < 256 or (options[:ram].to_i % 256) > 0
         raise ArgumentError.new(":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'") if options[:availability_zone] and !['AUTO', 'ZONE_1', 'ZONE_2'].include? options[:availability_zone]
         raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if options[:os_type] and !['WINDOWS', 'OTHER'].include? options[:os_type]

@@ -3,6 +3,76 @@ require 'spec_helper'
 describe Profitbricks::Server do
   include Savon::Spec::Macros
 
+  describe "enforcing required arguments" do 
+    describe "on create" do
+      it "should require :cores and :ram" do
+        expect { Server.create(:cores => 1) }.to raise_error(ArgumentError, "You must provide :cores and :ram")
+        expect { Server.create(:ram => 256) }.to raise_error(ArgumentError, "You must provide :cores and :ram")
+        expect { Server.create(:ram => 256, :cores => 1) }.not_to raise_error(ArgumentError, "You must provide :cores and :ram")
+      end
+
+      it "should require :ram to be a multiple of 256" do
+        expect { Server.create(:ram => 100, :cores => 1) }.to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+        expect { Server.create(:ram => 280, :cores => 1) }.to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+        expect { Server.create(:ram => 256, :cores => 1) }.not_to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+      end
+
+      it "should require that the availability_zone is either 'AUTO', 'ZONE_1', or 'ZONE_2'" do
+        expect { Server.create(:ram => 256, :cores => 1, :availability_zone => 'FAIL') }.to
+          raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
+
+        ['AUTO', 'ZONE_1', 'ZONE_2'].each do |zone|
+          expect { Server.create(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to 
+            raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
+        end
+      end
+
+      it "should require that :os_type is either 'WINDOWS' or 'OTHER'" do
+        expect { Server.create(:ram => 256, :cores => 1, :os_type => 'FAIL') }.to
+          raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
+
+        ['WINDOWS', 'OTHER'].each do |type|
+          expect { Server.create(:ram => 256, :cores => 1, :os_type => type) }.not_to 
+            raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
+        end
+      end
+    end
+    describe "on update" do
+      before(:each) do
+        savon.expects(:create_server).returns(:minimal)
+        savon.expects(:get_server).returns(:after_create)
+        @server = Server.create(:ram => 256, :cores => 1)
+      end
+
+      it "should require :ram to be a multiple of 256" do
+        expect { @server.update(:ram => 100, :cores => 1) }.to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+        expect { @server.update(:ram => 280, :cores => 1) }.to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+        expect { @server.update(:ram => 256, :cores => 1) }.not_to raise_error(ArgumentError, ":ram has to be at least 256MiB and a multiple of it")
+      end
+
+      it "should require that the availability_zone is either 'AUTO', 'ZONE_1', or 'ZONE_2'" do
+        expect { @server.update(:ram => 256, :cores => 1, :availability_zone => 'FAIL') }.to
+          raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
+
+        ['AUTO', 'ZONE_1', 'ZONE_2'].each do |zone|
+          expect { @server.update(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to 
+            raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
+        end
+      end
+
+      it "should require that :os_type is either 'WINDOWS' or 'OTHER'" do
+        expect { @server.update(:ram => 256, :cores => 1, :os_type => 'FAIL') }.to
+          raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
+
+        ['WINDOWS', 'OTHER'].each do |type|
+          expect { @server.update(:ram => 256, :cores => 1, :os_type => type) }.not_to 
+            raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
+        end
+      end
+    end
+  end
+
+
   it "should create a new server with minimal arguments" do
     savon.expects(:create_server).returns(:minimal)
     savon.expects(:get_server).returns(:after_create)
