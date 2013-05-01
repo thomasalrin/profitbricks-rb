@@ -12,6 +12,9 @@ if ENV['COVERAGE']
   SimpleCov.start
 end
 
+require 'coveralls'
+Coveralls.wear!
+
 Savon.configure do |config|
   config.log = false
 end
