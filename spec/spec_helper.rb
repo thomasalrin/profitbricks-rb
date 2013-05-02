@@ -7,6 +7,8 @@
 require "bundler"
 Bundler.require(:default, :development)
 
+require "savon/mock/spec_helper"
+
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start
@@ -15,9 +17,8 @@ end
 require 'coveralls'
 Coveralls.wear!
 
-Savon.configure do |config|
-  config.log = false
-end
+#Savon.client(log: false)
+
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -31,17 +32,16 @@ Savon::Spec::Fixture.path = File.expand_path("../fixtures", __FILE__)
 
 require 'profitbricks'
 
-Savon.configure do |config|
-  config.log = false 
-  config.log_level = :error
-end
+#Savon.configure do |config|
+#  config.log = false 
+#  config.log_level = :error
+#end
 HTTPI.log = false
-client = Savon::Client.new do |wsdl, http|
-  wsdl.endpoint = "https://api.profitbricks.com/1.1"
-  wsdl.document = "https://api.profitbricks.com/1.1/wsdl"
+client = Savon::Client.new do |globals|
+  globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
   if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
     puts "Warning: SSL certificate verification has been disabled"
-    http.auth.ssl.verify_mode = :none
+    globals.ssl_verify_mode :none
   end
 end
 
