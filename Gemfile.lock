@@ -99,6 +99,7 @@ DEPENDENCIES
   json
   rake
   rspec
+  rspec-mocks
   savon
   savon_spec
   simplecov

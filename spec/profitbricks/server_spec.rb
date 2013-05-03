@@ -89,6 +89,29 @@ describe Profitbricks::Server do
     s.reboot.should == true
   end
 
+  it "should check if its running" do
+    savon.expects(:get_server).returns(:after_create)
+    savon.expects(:get_server).returns(:after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.running?.should == false
+  end
+
+  it "should wait until it is running" do
+    savon.expects(:get_server).returns(:after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.should_receive(:running?).and_return(false,true)
+    s.wait_for_running
+  end
+
+  it "should call Nic.create correctly via the create_nic helper" do
+    savon.expects(:get_server).returns(:after_create)
+    savon.expects(:create_nic).returns(:success)
+    savon.expects(:get_nic).returns(:success)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    Nic.should_receive(:create).with(:server_id => "b7a5f3d1-324a-4490-aa8e-56cdec436e3f")
+    s.create_nic({})
+  end
+
   it "should be deleted" do
     savon.expects(:get_server).returns(:after_create)
     savon.expects(:delete_server).returns(:success)
