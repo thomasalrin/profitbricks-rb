@@ -4,6 +4,7 @@ gem 'savon'
 group :test, :development do
   gem 'json'
   gem 'rspec'
+  gem 'rspec-mocks'
   gem 'simplecov', require: false
   gem 'rake'
   gem 'guard'

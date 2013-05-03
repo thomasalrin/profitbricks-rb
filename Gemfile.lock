@@ -96,5 +96,6 @@ DEPENDENCIES
   rake
   rb-inotify
   rspec
+  rspec-mocks
   savon
   simplecov
