@@ -7,18 +7,18 @@ module Profitbricks
     # Deletes an empty Virtual Data Center. All components must be removed first.
     # @return [Boolean] true on success, false otherwise
     def delete
-      response = Profitbricks.request :delete_data_center, "<dataCenterId>#{self.id}</dataCenterId>"
-      response.to_hash[:delete_data_center_response][:return] ? true : false
+      response = Profitbricks.request :delete_data_center, data_center_id: self.id
+      response ? true : false
     end
 
     # Removes all components from the current Virtual Data Center.
     # @return The current Virtual Data Center
     def clear
-      response = Profitbricks.request :clear_data_center, "<dataCenterId>#{self.id}</dataCenterId>"
+      response = Profitbricks.request :clear_data_center, data_center_id: self.id
       @provisioning_state = nil
       @servers = []
       @storages = []
-      return self if response.to_hash[:clear_data_center_response][:return]
+      return self if response
     end
     
     # Renames the Virtual Data Center. 
@@ -26,9 +26,8 @@ module Profitbricks
     # @param [String] Name
     # @return [DataCenter] The renamed DataCenter
     def rename(name)
-      response = Profitbricks.request :update_data_center,
-                  "<arg0><dataCenterId>#{self.id}</dataCenterId><dataCenterName>#{name}</dataCenterName></arg0>"
-      if response.to_hash[:update_data_center_response][:return]
+      response = Profitbricks.request :update_data_center, data_center_id: self.id, data_center_name: name
+      if response
         @name = name
       end
       self
@@ -41,27 +40,27 @@ module Profitbricks
     #
     # @return [String] Provisioning State of the target Virtual Data Center (INACTIVE, INPROCESS, AVAILABLE, DELETED)
     def update_state
-      response = Profitbricks.request :get_data_center_state, "<dataCenterId>#{self.id}</dataCenterId>"
-      @provisioning_state = response.to_hash[:get_data_center_state_response][:return]
+      response = Profitbricks.request :get_data_center_state, data_center_id: self.id
+      @provisioning_state = response
       self.provisioning_state
     end
 
     # Creates a Server in the current Virtual Data Center, automatically sets the :data_center_id
     # @see Profitbricks::Server#create
     def create_server(options)
-      Server.create(options.merge(:data_center_id => self.id))
+      Server.create(options.merge(data_center_id: self.id))
     end
 
     # Creates a Storage in the current Virtual Data Center, automatically sets the :data_center_id
     # @see Profitbricks::Storage#create
     def create_storage(options)
-      Storage.create(options.merge(:data_center_id => self.id))
+      Storage.create(options.merge(data_center_id: self.id))
     end
 
     # Creates a Load Balancer in the current Virtual Data Center, automatically sets the :data_center_id
     # @see Profitbricks::LoadBalancer#create
     def create_load_balancer(options)
-      LoadBalancer.create(options.merge(:data_center_id => self.id))
+      LoadBalancer.create(options.merge(data_center_id: self.id))
     end
 
     # Checks if the Data Center was successfully provisioned
@@ -90,8 +89,7 @@ module Profitbricks
       # @return [Array <DataCenter>] Array of all available DataCenter
       def all
         resp = Profitbricks.request :get_all_data_centers
-        datacenters = resp.to_hash[:get_all_data_centers_response][:return]
-        [datacenters].flatten.compact.collect do |dc|
+        [resp].flatten.compact.collect do |dc|
           PB::DataCenter.find(:id => PB::DataCenter.new(dc).id)
         end
       end
@@ -104,10 +102,9 @@ module Profitbricks
       # @return [DataCenter] The newly created Virtual Data Center
       def create(options)
         raise ArgumentError.new(":region has to be one of 'DEFAULT', 'NORTH_AMERICA', or 'EUROPE'") if options[:region] and !['DEFAULT', 'EUROPE', 'NORTH_AMERICA'].include? options[:region]
-        xml = "<dataCenterName>#{options[:name]}</dataCenterName>"
-        xml += get_xml_and_update_attributes options, [:region]
-        response = Profitbricks.request :create_data_center, xml
-        self.find(:id => response.to_hash[:create_data_center_response][:return][:data_center_id] )
+        options[:data_center_name] = options.delete :name
+        response = Profitbricks.request :create_data_center, options
+        self.find(:id => response[:data_center_id] )
       end
 
       # Finds a Virtual Data Center
@@ -120,8 +117,9 @@ module Profitbricks
           options[:id] = dc.id if dc
         end
         raise "Unable to locate the datacenter named '#{options[:name]}'" unless options[:id]
-        response = Profitbricks.request :get_data_center, "<dataCenterId>#{options[:id]}</dataCenterId>"
-        PB::DataCenter.new(response.to_hash[:get_data_center_response][:return])
+        options[:data_center_id]   = options.delete :id
+        response = Profitbricks.request :get_data_center, options
+        PB::DataCenter.new(response)
       end
     end
 

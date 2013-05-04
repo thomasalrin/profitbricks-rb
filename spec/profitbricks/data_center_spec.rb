@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Profitbricks::DataCenter do
+describe Profitbricks::DataCenter, :focus => true do
   include Savon::Spec::Macros
 
   it "should create a new datacenter" do

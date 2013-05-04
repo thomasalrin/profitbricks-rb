@@ -13,7 +13,8 @@ module Profitbricks
 
     @client = Savon::Client.new do |globals|
       globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
-      globals.raise_errors false 
+      globals.convert_request_keys_to :lower_camelcase
+      globals.raise_errors true 
       globals.log Profitbricks::Config.log
       globals.pretty_print_xml true
 
@@ -36,22 +37,21 @@ module Profitbricks
   end
 
   private 
-  def self.request(method, body=nil)
-    resp = Profitbricks.client.call method do
-      soap.body = body if body
-    end
-    self.store(method, body, resp.to_xml, resp.to_hash) if Profitbricks::Config.save_responses
-    if resp.soap_fault?
-      puts "Error during request '#{method}': #{resp.soap_fault.message}"
+  def self.request(method, options={})
+    begin
+      resp = Profitbricks.client.call(method, message: options)
+      self.store(method, options, resp.to_xml, resp.to_hash) if Profitbricks::Config.save_responses
+    rescue Savon::SOAPFault => error
+      puts "Error during request '#{method}': #{error.to_s}"
       puts "------------------------------ Request XML -------------------------------"
-      puts body
+      puts options
       puts "--------------------------------------------------------------------------"
-      puts "------------------------------ Response XML ------------------------------"
-      puts resp.to_xml
+      puts "------------------------------ Response ----------------------------------"
+      puts error.to_hash
       puts "--------------------------------------------------------------------------"
-      raise RuntimeError.new("Error during request '#{method}': #{resp.soap_fault.message}")
+      raise RuntimeError.new("Error during request '#{method}': #{error.to_s}")
     end
-    resp
+    resp.body["#{method}_response".to_sym][:return]
   end
 
   def self.client=(client)
