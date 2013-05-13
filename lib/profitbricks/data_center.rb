@@ -118,6 +118,7 @@ module Profitbricks
         end
         raise "Unable to locate the datacenter named '#{options[:name]}'" unless options[:id]
         options[:data_center_id]   = options.delete :id
+        options.delete :name
         response = Profitbricks.request :get_data_center, options
         PB::DataCenter.new(response)
       end

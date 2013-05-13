@@ -1,4 +1,8 @@
 module Profitbricks
+  NEED_PREFIX = [:create_nic, :create_load_balancer, :update_storage, :create_storage,
+                 :update_data_center, :rom_drive, :update_nic, :create_server,
+                 :update_load_balancer, :connect_storage, :update_server]
+
   # Configure the Profitbricks API client
   #
   # @see Profitbricks::Config
@@ -39,19 +43,24 @@ module Profitbricks
   private 
   def self.request(method, options={})
     begin
-      resp = Profitbricks.client.call(method, message: options)
-      self.store(method, options, resp.to_xml, resp.to_hash) if Profitbricks::Config.save_responses
+      message = if NEED_PREFIX.include? method
+        { arg0: options }
+      else
+        options
+      end
+      resp = Profitbricks.client.call(method, message: message)
+      self.store(method, message, resp.to_xml, resp.to_hash) if Profitbricks::Config.save_responses
     rescue Savon::SOAPFault => error
       puts "Error during request '#{method}': #{error.to_s}"
       puts "------------------------------ Request XML -------------------------------"
-      puts options
+      puts message
       puts "--------------------------------------------------------------------------"
       puts "------------------------------ Response ----------------------------------"
       puts error.to_hash
       puts "--------------------------------------------------------------------------"
       raise RuntimeError.new("Error during request '#{method}': #{error.to_s}")
     end
-    resp.body["#{method}_response".to_sym][:return]
+    (resp.body["#{method}_response".to_sym] || resp.body["#{method}_return".to_sym])[:return]
   end
 
   def self.client=(client)

@@ -38,11 +38,8 @@ GEM
     json (1.7.7)
     listen (0.7.3)
     lumberjack (1.0.3)
-    metaclass (0.0.1)
     method_source (0.8.1)
     mime-types (1.23)
-    mocha (0.10.5)
-      metaclass (~> 0.0.1)
     multi_json (1.7.2)
     nokogiri (1.5.9)
     nori (2.1.0)
@@ -70,10 +67,6 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.1.0)
       wasabi (~> 3.1.0)
-    savon_spec (0.1.6)
-      mocha (>= 0.9.8)
-      rspec (>= 2.0.0)
-      savon (>= 0.8.0)
     simplecov (0.7.1)
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
@@ -100,5 +93,4 @@ DEPENDENCIES
   rake
   rspec
   savon
-  savon_spec
   simplecov

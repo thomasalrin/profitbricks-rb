@@ -54,6 +54,12 @@ module Profitbricks
     end
 
     private
+    def update_attributes_from_hash(updated)
+      updated.keys.each do |a|
+        initialize_getter(a, updated[a])
+        self.instance_variable_set("@#{a}", updated[a])
+      end
+    end
     def update_attributes(updated)
       self.instance_variables.each do |var|
         self.instance_variable_set(var, updated.instance_variable_get(var))
