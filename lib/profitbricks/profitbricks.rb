@@ -22,10 +22,11 @@ module Profitbricks
       globals.log Profitbricks::Config.log
       globals.pretty_print_xml true
 
-      if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
-        puts "Warning: SSL certificate verification has been disabled"
-        globals.ssl_verify_mode = :none
-      end
+      # Looks like ssl verifycation works with current jruby
+      #if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
+      #  puts "Warning: SSL certificate verification has been disabled"
+      #  globals.ssl_verify_mode = :none
+      #end
       globals.basic_auth [Profitbricks::Config.username, Profitbricks::Config.password]
     end
 

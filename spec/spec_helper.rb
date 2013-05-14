@@ -36,10 +36,6 @@ HTTPI.log = false
 client = Savon::Client.new do |globals|
   globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
   globals.log false
-  if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
-    puts "Warning: SSL certificate verification has been disabled"
-    globals.ssl_verify_mode :none
-  end
 end
 
 Profitbricks.configure do |config|
