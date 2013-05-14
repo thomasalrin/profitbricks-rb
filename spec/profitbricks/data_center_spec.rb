@@ -104,4 +104,25 @@ describe Profitbricks::DataCenter do
     dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     dc.delete.should == true
   end
+
+  it "should call Server.create correctly via the create_server helper" do
+    savon.expects(:get_data_center).with(message: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_data_center, :two_servers_with_storage)
+    dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    Server.should_receive(:create).with(:data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    dc.create_server({})
+  end
+
+  it "should call Storage.create correctly via the create_storage helper" do
+    savon.expects(:get_data_center).with(message: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_data_center, :two_servers_with_storage)
+    dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    Storage.should_receive(:create).with(:data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    dc.create_storage({})
+  end
+
+  it "should call LoadBalancer.create correctly via the create_load_balancer helper" do
+    savon.expects(:get_data_center).with(message: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_data_center, :two_servers_with_storage)
+    dc = Profitbricks::DataCenter.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    LoadBalancer.should_receive(:create).with(:data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    dc.create_load_balancer({})
+  end
 end
