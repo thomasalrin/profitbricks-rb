@@ -13,9 +13,8 @@ module Profitbricks
     # @param [Boolean] Internet access (trUe/false)
     # @return [Boolean] true on success, false otherwise
     def set_internet_access=(value)
-      xml = get_xml_and_update_attributes :data_center_id => self.data_center_id, :lan_id => self.lan_id, :land_id => self.lan_id, :internet_access => value
-      response = Profitbricks.request :set_internet_access, xml
-      return true if response.to_hash[:set_internet_access_response][:return]
+      response = Profitbricks.request :set_internet_access, data_center_id: self.data_center_id, lan_id: self.lan_id, internet_access: value
+      return true
     end
 
     # Changes the settings of an existing NIC. 
@@ -27,38 +26,36 @@ module Profitbricks
     # @option options [String] :name Names the NIC
     # @return [Boolean] true on success, false otherwise
     def update(options = {})
-      xml = "<arg0>"
-      options.merge!(:nic_id => self.id)
-      xml += get_xml_and_update_attributes options , [:nic_id, :lan_id, :server_id, :ip, :name]
-      xml += "</arg0>"
-      response = Profitbricks.request :update_nic, xml
-      return true if response.to_hash[:update_nic_response][:return]
+      update_attributes_from_hash options
+      options[:nic_name] = options.delete :name if options[:name]
+      response = Profitbricks.request :update_nic, options.merge(:nic_id => self.id)
+      return true
     end
 
     # Adds an existing reserved public IP to a NIC. This operation is required, when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.
     #
     # @param [String] Reserved IP
     def add_ip(ip)
-      response = Profitbricks.request :add_public_ip_to_nic, "<nicId>#{self.id}</nicId><ip>#{ip}</ip>"
+      response = Profitbricks.request :add_public_ip_to_nic, nic_id: self.id, ip: ip
       @ips.push ip
-      return true if response.to_hash[:add_public_ip_to_nic_response][:return]
+      return true
     end
 
     # Removes a reserved public IP from a NIC. This operation is required, when dealing with reserved public IPs to ensure proper routing by the ProfitBricks cloud networking layer.
     #
     # @param [String] Reserved IP
     def remove_ip(ip)
-      response = Profitbricks.request :remove_public_ip_from_nic, "<nicId>#{self.id}</nicId><ip>#{ip}</ip>"
+      response = Profitbricks.request :remove_public_ip_from_nic, nic_id: self.id, ip: ip
       @ips.delete ip
-      return true if response.to_hash[:remove_public_ip_from_nic_response][:return]
+      return true
     end
 
     # Deletes an existing NIC.
     #
     # @return [Boolean] true on success, false otherwise
     def delete
-      response = Profitbricks.request :delete_nic, "<nicId>#{self.id}</nicId>"
-      return true if response.to_hash[:delete_nic_response][:return]
+      response = Profitbricks.request :delete_nic, nic_id: self.id
+      return true
     end
 
     def ip
@@ -82,11 +79,9 @@ module Profitbricks
       # @option options [String] :name Names the NIC
       # @return [Nic] The created NIC
       def create(options = {})
-        xml = "<arg0>"
-        xml += get_xml_and_update_attributes options, [:server_id, :lan_id, :ip, :name]
-        xml += "</arg0>"
-        response = Profitbricks.request :create_nic, xml
-        self.find(:id => response.to_hash[:create_nic_return][:return][:nic_id])
+        options[:nic_name] = options.delete :name if options[:name]
+        response = Profitbricks.request :create_nic, options
+        self.find(:id => response[:nic_id])
       end
       
       # Returns information about the state and configuration of an existing NIC. 
@@ -95,8 +90,8 @@ module Profitbricks
       # @option options [String] :id The id of the NIC to locate
       def find(options = {})
         raise "Unable to locate the Nic named '#{options[:name]}'" unless options[:id]
-        response = Profitbricks.request :get_nic, "<nicId>#{options[:id]}</nicId>"
-        PB::Nic.new(response.to_hash[:get_nic_response][:return])
+        response = Profitbricks.request :get_nic, nic_id: options[:id]
+        PB::Nic.new(response)
       end
     end
   end

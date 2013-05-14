@@ -12,12 +12,10 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def update(options = {})
       options.merge!(:load_balancer_id=> self.id)
-      xml = "<arg0>"
-      xml += get_xml_and_update_attributes options, [:load_balancer_id, :ip, :name, :algorithm]
-      xml += "</arg0>"
-      response = Profitbricks.request :update_load_balancer, xml
+      options[:load_balancer_name] = options.delete :name
+      response = Profitbricks.request :update_load_balancer, options
       self.reload
-      return true if response.to_hash[:update_load_balancer_response][:return]
+      return true
     end
 
     # Adds new servers to the Load Balancer within the respective LAN.
@@ -31,14 +29,10 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def register_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:load_balancer_id => self.id}
-      xml = get_xml_and_update_attributes options, [:load_balancer_id]
-      servers.each do |server|
-        xml += "<serverIds>#{server.id}</serverIds>"
-      end
-      response = Profitbricks.request :register_servers_on_load_balancer, xml
-      update_attributes(response.to_hash[:register_servers_on_load_balancer_response][:return])
-      return true if response.to_hash[:register_servers_on_load_balancer_response][:return]
+      options = {load_balancer_id: self.id, server_ids: servers.collect(&:id)}
+      response = Profitbricks.request :register_servers_on_load_balancer, options
+      self.reload
+      return true
     end
 
     # Removes servers from the load balancer
@@ -51,13 +45,9 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def deregister_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:load_balancer_id => self.id}
-      xml = get_xml_and_update_attributes options, [:load_balancer_id]
-      servers.each do |server|
-        xml += "<serverIds>#{server.id}</serverIds>"
-      end
-      response = Profitbricks.request :deregister_servers_on_load_balancer, xml
-      return true if response.to_hash[:deregister_servers_on_load_balancer_response][:return]
+      options = {load_balancer_id: self.id, server_ids: servers.collect(&:id)}
+      response = Profitbricks.request :deregister_servers_on_load_balancer, options
+      return true
     end
 
     # Enables the load balancer to distribute traffic to the specified servers.
@@ -66,13 +56,9 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def activate_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:load_balancer_id => self.id}
-      xml = get_xml_and_update_attributes options, [:load_balancer_id]
-      servers.each do |server|
-        xml += "<serverIds>#{server.id}</serverIds>"
-      end
-      response = Profitbricks.request :activate_load_balancing_on_servers, xml
-      return true if response.to_hash[:activate_load_balancing_on_servers_response][:return]
+      options = {load_balancer_id: self.id, server_ids: servers.collect(&:id)}
+      response = Profitbricks.request :activate_load_balancing_on_servers, options
+      return true
     end
 
     # Disables the load balancer to distribute traffic to the specified servers.
@@ -81,13 +67,9 @@ module Profitbricks
     # @return [Boolean] true on success, false otherwise
     def deactivate_servers(servers)
       raise "You have to provide at least one server" unless servers
-      options = {:load_balancer_id => self.id}
-      xml = get_xml_and_update_attributes options, [:load_balancer_id]
-      servers.each do |server|
-        xml += "<serverIds>#{server.id}</serverIds>"
-      end
-      response = Profitbricks.request :deactivate_load_balancing_on_servers, xml
-      return true if response.to_hash[:deactivate_load_balancing_on_servers_response][:return]
+      options = {load_balancer_id: self.id, server_ids: servers.collect(&:id)}
+      response = Profitbricks.request :deactivate_load_balancing_on_servers, options
+      return true
     end
 
     # Deletes an existing load balancer. 
@@ -96,8 +78,8 @@ module Profitbricks
     #
     # @return [Boolean] true on success, false otherwise
     def delete
-      response = Profitbricks.request :delete_load_balancer, "<loadBalancerId>#{self.id}</loadBalancerId>"
-      return true if response.to_hash[:delete_load_balancer_response][:return]
+      Profitbricks.request :delete_load_balancer, load_balancer_id: self.id
+      return true
     end
 
     class << self
@@ -116,16 +98,9 @@ module Profitbricks
       # @option options [Array<Server>] :servers Array of servers to connect to the LoadBalancer
       # @return [LoadBalancer] The created LoadBalancer
       def create(options = {})
-        xml = "<arg0>"
-        xml += get_xml_and_update_attributes options, [:data_center_id, :lan_id, :ip, :name, :algorithm]
-        unless options[:servers].nil?
-          options[:servers].each do |server|
-            xml += "<serverIds>#{server.id}</serverIds>"
-          end
-        end
-        xml += "</arg0>"
-        response = Profitbricks.request :create_load_balancer, xml
-        self.find(:id => response.to_hash[:create_load_balancer_response][:return][:load_balancer_id])
+        options[:server_ids] = options.delete(:servers).collect(&:id)
+        response = Profitbricks.request :create_load_balancer, options
+        self.find(:id => response[:load_balancer_id])
       end
       
       # Returns information about a virtual load balancer.
@@ -135,8 +110,8 @@ module Profitbricks
       # @return [LoadBalancer] The found LoadBalancer
       def find(options = {})
         raise "Unable to locate the LoadBalancer named '#{options[:name]}'" unless options[:id]
-        response = Profitbricks.request :get_load_balancer, "<loadBalancerId>#{options[:id]}</loadBalancerId>"
-        PB::LoadBalancer.new(response.to_hash[:get_load_balancer_response][:return])
+        response = Profitbricks.request :get_load_balancer, load_balancer_id: options[:id]
+        PB::LoadBalancer.new(response)
       end
     end
   end

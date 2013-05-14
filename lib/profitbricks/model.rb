@@ -30,7 +30,7 @@ module Profitbricks
       @@associations[model] = {:type => :belongs_to, :class => klass}
       define_method(model) { instance_variable_get("@#{model}") }
     end
-
+=begin
     def get_xml_and_update_attributes(hash, attributes=nil)
       attributes = hash.keys if attributes.nil?
       attributes.each do |a|
@@ -44,7 +44,7 @@ module Profitbricks
       hash, attributes = expand_attributes(hash, attributes, name())
       self.build_xml(hash, attributes)
     end
-
+=end
     def attributes
       a = {}
       self.instance_variables.each do |variable|
@@ -72,12 +72,6 @@ module Profitbricks
       value
     end
 
-    def self.build_xml(hash ,attributes)
-      attributes.collect do |a|
-        "<#{a.to_s.lower_camelcase}>#{hash[a]}</#{a.to_s.lower_camelcase}>" if hash[a]
-      end.join('')
-    end
-
     def initialize_getter name, value=nil
       self.class.send :define_method, name do 
         instance_variable_get("@#{name}")
@@ -103,7 +97,7 @@ module Profitbricks
     def initialize_belongs_to_association name, association, value
       self.instance_variable_set("@#{name}", association[:class].send(:new, value, self))
     end
-
+=begin
     def self.expand_attributes(hash, attributes, klass=nil)
       [:name, :algorithm].each do |a|
         deleted =  hash.delete(a)
@@ -115,5 +109,6 @@ module Profitbricks
       end
       return hash, attributes
     end
-	end
+=end
+  end
 end

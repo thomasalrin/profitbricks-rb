@@ -7,7 +7,7 @@ module Profitbricks
     # @return [Image] Updated Image Object
     def set_os_type(type)
       raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if !['WINDOWS', 'OTHER'].include? type
-      response = Profitbricks.request :set_image_os_type, "<imageId>#{self.id}</imageId><osType>#{type}</osType>"
+      response = Profitbricks.request :set_image_os_type, image_id: self.id, os_type: type
       @os_type = type
       self
     end
@@ -38,7 +38,7 @@ module Profitbricks
       # @return [Array<Image>] List of all available Images
       def all
         resp = Profitbricks.request :get_all_images
-        resp.to_hash[:get_all_images_response][:return].collect do |dc|
+        resp.collect do |dc|
           PB::Image.new(dc)
         end
       end

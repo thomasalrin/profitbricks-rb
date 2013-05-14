@@ -15,23 +15,17 @@ module Profitbricks
     # @param [Array<FirewallRule>] Array of FirewallRules to add
     # @return [Boolean] true on success, false otherwise
     def add_rules(rules)
-      xml = ""
+      options = {request: []}
       rules.each do |rule|
-        xml += "<request>"
-        xml += rule.get_xml_and_update_attributes rule.attributes, rule.attributes.keys
-        xml += "</request>"
+        options[:request] << rule.attributes
       end
       response = nil
       if @parent.class == Profitbricks::LoadBalancer
-        xml += "<loadBalancerId>#{@parent.id}</loadBalancerId>"
-        response = Profitbricks.request :add_firewall_rules_to_load_balancer, xml
-        update_attributes(response.to_hash[:add_firewall_rules_to_load_balancer_response][:return])
-        return true if response.to_hash[:add_firewall_rules_to_load_balancer_response][:return]
+        response = Profitbricks.request :add_firewall_rules_to_load_balancer, options.merge(load_balancer_id: @parent.id)
+        self.reload
       else
-        xml += "<nicId>#{self.nic_id}</nicId>"        
-        response = Profitbricks.request :add_firewall_rules_to_nic, xml
-        update_attributes(response.to_hash[:add_firewall_rules_to_nic_response][:return])
-        return true if response.to_hash[:add_firewall_rules_to_nic_response][:return]
+        response = Profitbricks.request :add_firewall_rules_to_nic, options.merge(nic_id: self.nic_id)
+        self.reload
       end
       
     end
@@ -40,24 +34,24 @@ module Profitbricks
     #
     # @return [Boolean] true on success, false otherwise
     def activate
-      response = Profitbricks.request :activate_firewalls, "<firewallIds>#{self.id}</firewallIds>"
-      return true if response[:activate_firewalls_response][:return]
+      response = Profitbricks.request :activate_firewalls, firewall_ids: self.id
+      return true
     end
 
     # Deactivates the Firewall
     #
     # @return [Boolean] true on success, false otherwise
     def deactivate
-      response = Profitbricks.request :deactivate_firewalls, "<firewallIds>#{self.id}</firewallIds>"
-      return true if response[:deactivate_firewalls_response][:return]
+      response = Profitbricks.request :deactivate_firewalls, firewall_ids: self.id
+      return true
     end
     
     # Deletes the Firewall
     #
     # @return [Boolean] true on success, false otherwise
     def delete
-      response = Profitbricks.request :delete_firewalls, "<firewallIds>#{self.id}</firewallIds>"
-      return true if response[:delete_firewalls_response][:return]
+      response = Profitbricks.request :delete_firewalls, firewall_ids: self.id
+      return true
     end
     class << self
       # Returns information about the respective firewall. 
@@ -67,9 +61,9 @@ module Profitbricks
       # @option options [String] :id The id of the firewall to locate (required)
       # @return [Firewall] The located Firewall
       def find(options = {})
-        response = Profitbricks.request :get_firewall, "<firewallId>#{options[:id]}</firewallId>"
+        response = Profitbricks.request :get_firewall, firewall_id: options[:id]
         # FIXME we cannot load the Firewall without knowing if it is belonging to a NIC or a LoadBalancer
-        PB::Firewall.new(response.to_hash[:get_firewall_response][:return], nil)
+        PB::Firewall.new(response, nil)
       end
     end
   end

@@ -5,15 +5,15 @@ module Profitbricks
     # Deletes the virtual Server. 
     # @return [Boolean] true on success, false otherwise
     def delete
-      response = Profitbricks.request :delete_server, "<serverId>#{self.id}</serverId>"
-      return true if response.to_hash[:delete_server_response][:return]
+      Profitbricks.request :delete_server, server_id: self.id
+      return true
     end
     
     # Reboots the virtual Server (POWER CYCLE). 
     # @return [Boolean] true on success, false otherwise
     def reboot
-      response = Profitbricks.request :reboot_server, "<serverId>#{self.id}</serverId>"
-      return true if response.to_hash[:reboot_server_response][:return]
+      Profitbricks.request :reboot_server, server_id: self.id
+      return true
     end
 
     # Updates parameters of an existing virtual Server device. 
@@ -31,11 +31,11 @@ module Profitbricks
       raise ArgumentError.new(":ram has to be at least 256MiB and a multiple of it") if options[:ram] and (options[:ram] < 256 or (options[:ram] % 256) > 0)
       raise ArgumentError.new(":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'") if options[:availability_zone] and !['AUTO', 'ZONE_1', 'ZONE_2'].include? options[:availability_zone]
       raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if options[:os_type] and !['WINDOWS', 'OTHER'].include? options[:os_type]
-      xml = "<arg0><serverId>#{self.id}</serverId>"
-      xml += get_xml_and_update_attributes options, [:cores, :ram, :name, :boot_from_storage_id, :boot_from_image_id, :availability_zone, :os_type]
-      xml += "</arg0>"
-      response = Profitbricks.request :update_server, xml
-      return true if response.to_hash[:update_server_response][:return]
+      update_attributes_from_hash options
+      options[:server_name] = options.delete :name if options[:name]
+      options[:server_id] = self.id
+      response = Profitbricks.request :update_server, options
+      return true
     end
 
     # Checks if the Server is running
@@ -80,12 +80,9 @@ module Profitbricks
         raise ArgumentError.new(":ram has to be at least 256MiB and a multiple of it") if options[:ram].to_i < 256 or (options[:ram].to_i % 256) > 0
         raise ArgumentError.new(":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'") if options[:availability_zone] and !['AUTO', 'ZONE_1', 'ZONE_2'].include? options[:availability_zone]
         raise ArgumentError.new(":os_type has to be either 'WINDOWS' or 'OTHER'") if options[:os_type] and !['WINDOWS', 'OTHER'].include? options[:os_type]
-        xml = "<arg0>"
-        xml += get_xml_and_update_attributes options, 
-                    [:cores, :ram, :name, :boot_from_storage_id, :boot_from_image_id, :os_type, :internet_access, :lan_id, :data_center_id, :availability_zone]
-        xml += "</arg0>"
-        response = Profitbricks.request :create_server, xml
-        self.find(:id => response.to_hash[:create_server_return][:return][:server_id])
+        options[:server_name] = options.delete :name if options[:name]
+        response = Profitbricks.request :create_server, options
+        self.find(:id => response[:server_id])
       end
 
       # Finds a virtual server
@@ -99,8 +96,8 @@ module Profitbricks
         #  options[:id] = dc.id if dc
         #end
         raise "Unable to locate the server named '#{options[:name]}'" unless options[:id]
-        response = Profitbricks.request :get_server, "<serverId>#{options[:id]}</serverId>"
-        PB::Server.new(response.to_hash[:get_server_response][:return])
+        response = Profitbricks.request :get_server, server_id: options[:id]
+        PB::Server.new(response)
       end
     end
   end

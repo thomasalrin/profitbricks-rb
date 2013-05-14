@@ -12,11 +12,10 @@ require "savon/mock/spec_helper"
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start
+else
+  require 'coveralls'
+  Coveralls.wear!
 end
-
-require 'coveralls'
-Coveralls.wear!
-
 #Savon.client(log: false)
 
 
@@ -24,11 +23,8 @@ RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
- # config.include Savon::Spec::Macros
+  config.mock_with :rspec 
 end
-
-
-#Savon::Spec::Fixture.path = File.expand_path("../fixtures", __FILE__)
 
 def f method, response
   File.read File.join(File.expand_path("../fixtures", __FILE__), method.to_s, "#{response.to_s}.xml")
@@ -36,10 +32,6 @@ end
 
 require 'profitbricks'
 
-#Savon.configure do |config|
-#  config.log = false 
-#  config.log_level = :error
-#end
 HTTPI.log = false
 client = Savon::Client.new do |globals|
   globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
@@ -53,5 +45,6 @@ end
 Profitbricks.configure do |config|
   config.username = "none"
   config.password = "none"
+  config.polling_interval = 0.1 
 end
 Profitbricks.client = client

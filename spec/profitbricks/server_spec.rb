@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe Profitbricks::Server do
-  include Savon::Spec::Macros
+  include Savon::SpecHelper
 
+  before(:all) { savon.mock!   }
+  after(:all)  { savon.unmock! }
+  
   describe "enforcing required arguments" do 
     describe "on create" do
       it "should require :cores and :ram" do
@@ -39,8 +42,8 @@ describe Profitbricks::Server do
     end
     describe "on update" do
       before(:each) do
-        savon.expects(:create_server).returns(:minimal)
-        savon.expects(:get_server).returns(:after_create)
+        savon.expects(:create_server).with(message: {arg0: {ram: 256, cores: 1}}).returns(f :create_server, :minimal)
+        savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
         @server = Server.create(:ram => 256, :cores => 1)
       end
 
@@ -74,8 +77,8 @@ describe Profitbricks::Server do
 
 
   it "should create a new server with minimal arguments" do
-    savon.expects(:create_server).returns(:minimal)
-    savon.expects(:get_server).returns(:after_create)
+    savon.expects(:create_server).with(message: {arg0: {ram: 256, cores: 1, server_name: 'Test Server', data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}}).returns(f :create_server, :minimal)
+    savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
     s = Server.create(:cores => 1, :ram => 256, :name => 'Test Server', :data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.cores.should == 1
     s.ram.should == 256
@@ -83,23 +86,44 @@ describe Profitbricks::Server do
     s.data_center_id.should == "b3eebede-5c78-417c-b1bc-ff5de01a0602"
   end
   it "should reboot on request" do
-    savon.expects(:get_server).returns(:after_create)
-    savon.expects(:reboot_server).returns(:success)
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:reboot_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :reboot_server, :success)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.reboot.should == true
   end
 
+  it "should check if its running" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.running?.should == false
+  end
+
+  it "should wait until it is running" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.should_receive(:running?).and_return(false,true)
+    s.wait_for_running
+  end
+
+  it "should call Nic.create correctly via the create_nic helper" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    Nic.should_receive(:create).with(:server_id => "b7a5f3d1-324a-4490-aa8e-56cdec436e3f")
+    s.create_nic({})
+  end
+
   it "should be deleted" do
-    savon.expects(:get_server).returns(:after_create)
-    savon.expects(:delete_server).returns(:success)
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:delete_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :delete_server, :success)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.delete.should == true
   end
 
   describe "updating" do
     it "should update basic attributes correctly" do 
-      savon.expects(:get_server).returns(:after_create)
-      savon.expects(:update_server).returns(:basic)
+      savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+      savon.expects(:update_server).with(message: {arg0: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'Power of two', os_type: 'WINDOWS', cores: 2, ram: 512}}).returns(f :update_server, :basic)
       s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
       s.update(:cores => 2, :ram => 512, :name => "Power of two", :os_type => 'WINDOWS')
       s.cores.should == 2
