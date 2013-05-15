@@ -16,22 +16,30 @@ if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ruby'
   Hoe.plugin :bundler
   Hoe.plugin :gemcutter
   Hoe.plugins.delete :rubyforge
+  Hoe.plugins.delete :test
 
   Hoe.spec 'profitbricks' do
     developer('Dominik Sander', 'git@dsander.de')
 
     self.readme_file = 'README.md'
     self.history_file = 'CHANGELOG.md'
-    self.extra_deps << ["savon", "1.2.0"]
+    self.extra_deps << ["savon", "2.2.0"]
   end
 
   task :prerelease => [:clobber, :check_manifest, :test]
-else
-  RSpec::Core::RakeTask.new(:spec) do |spec|
-    spec.pattern = 'spec/**/*_spec.rb'
+end
+
+RSpec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = 'spec/profitbricks/*_spec.rb'
+  spec.rspec_opts = ['--backtrace']
+end
+namespace :spec do
+  RSpec::Core::RakeTask.new(:live) do |spec|
+    spec.pattern = 'spec/live/*_spec.rb'
     spec.rspec_opts = ['--backtrace']
   end
 end
+
 
 task :default => :spec
 task :test => :spec

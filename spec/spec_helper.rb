@@ -16,8 +16,6 @@ else
   require 'coveralls'
   Coveralls.wear!
 end
-#Savon.client(log: false)
-
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -33,14 +31,9 @@ end
 require 'profitbricks'
 
 HTTPI.log = false
-client = Savon::Client.new do |globals|
-  globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
-  globals.log false
-end
 
 Profitbricks.configure do |config|
   config.username = "none"
   config.password = "none"
   config.polling_interval = 0.1 
 end
-Profitbricks.client = client
