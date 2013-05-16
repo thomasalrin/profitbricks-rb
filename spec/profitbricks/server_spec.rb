@@ -106,6 +106,20 @@ describe Profitbricks::Server do
     s.wait_for_running
   end
 
+  it "should return false on provisioned?" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
+    s.provisioned?.should == false
+  end
+  
+  it "should wait for provisioning to finish" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.should_receive(:provisioned?).and_return(false,true)
+    s.wait_for_provisioning
+  end
+
   it "should call Nic.create correctly via the create_nic helper" do
     savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")

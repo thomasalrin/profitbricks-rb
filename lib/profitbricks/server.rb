@@ -53,6 +53,25 @@ module Profitbricks
       end
     end
 
+    # Checks if the Server was successfully provisioned
+    #
+    # @return [Boolean] true if the Server was provisioned, false otherwise
+    def provisioned?
+      self.reload
+      if @provisioning_state == 'AVAILABLE'
+        true
+      else
+        false
+      end
+    end
+
+    # Blocks until the Server is provisioned
+    def wait_for_provisioning
+      while !self.provisioned?
+        sleep Profitbricks::Config.polling_interval
+      end
+    end
+
     # Creates a Nic for the current Server, automatically sets the :server_id
     # @see Profitbricks::Nic#create
     def create_nic(options)
