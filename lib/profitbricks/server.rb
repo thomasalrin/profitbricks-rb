@@ -9,10 +9,38 @@ module Profitbricks
       return true
     end
     
-    # Reboots the virtual Server (POWER CYCLE). 
+    # Reboots an existing virtual server (SOFT REBOOT). 
     # @return [Boolean] true on success, false otherwise
     def reboot
       Profitbricks.request :reboot_server, server_id: self.id
+      return true
+    end
+
+    # Resets an existing virtual server (POWER CYCLE).
+    # @return [Boolean] true on success, false otherwise
+    def reset
+      Profitbricks.request :reset_server, server_id: self.id
+      return true
+    end
+
+    # Starts an existing virtual server
+    # @return [Boolean] true on success, false otherwise
+    def start
+      Profitbricks.request :start_server, server_id: self.id
+      return true
+    end
+
+    # Stops an existing virtual server (HARD power off) 
+    # @return [Boolean] true on success, false otherwise
+    def power_off
+      Profitbricks.request :power_off_server, server_id: self.id
+      return true
+    end
+
+    # Stops an existing virtual server gracefully (SOFT stop)
+    # @return [Boolean] true on success, false otherwise
+    def shutdown
+      Profitbricks.request :shutdown_server, server_id: self.id
       return true
     end
 
@@ -78,7 +106,29 @@ module Profitbricks
       Nic.create(options.merge(:server_id => self.id))
     end
 
+    # Helper method to get a list of all public IP adresses
+    #
+    # @return [Array <String>] Array of all public IP adresses
+    def public_ips
+      filter_nics_and_return_ips {|nic| nic.internet_access == true }
+    end
+
+    # Helper method to get a list of all private IP adresses
+    #
+    # @return [Array <String>] Array of all private IP adresses
+    def private_ips
+      filter_nics_and_return_ips {|nic| nic.internet_access == false }
+    end
+
+
     class << self
+      # Returns a list of all Servers created by the user.
+      # 
+      # @return [Array <Server>] Array of all available Servers
+      def all
+        DataCenter.all.collect(&:servers).flatten!
+      end
+
       # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a 
       # boot device and connect the server to an existing LAN or the Internet.
       # 
@@ -119,5 +169,10 @@ module Profitbricks
         PB::Server.new(response)
       end
     end
+
+    private
+    def filter_nics_and_return_ips(&block)
+      self.nics.select { |nic| yield nic }.collect(&:ips).flatten!
+    end 
   end
 end

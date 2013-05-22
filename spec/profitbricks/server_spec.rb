@@ -85,11 +85,40 @@ describe Profitbricks::Server do
     s.name.should == 'Test Server'
     s.data_center_id.should == "b3eebede-5c78-417c-b1bc-ff5de01a0602"
   end
+
   it "should reboot on request" do
     savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
     savon.expects(:reboot_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :reboot_server, :success)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.reboot.should == true
+  end
+
+  it "should reset on request" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:reset_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :reset_server, :success)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.reset.should == true
+  end
+
+  it "should start on request" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:start_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :start_server, :success)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.start.should == true
+  end
+
+  it "should power off on request" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:power_off_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :power_off_server, :success)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.power_off.should == true
+  end
+
+  it "should shutdown on request" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    savon.expects(:shutdown_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :shutdown_server, :success)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.shutdown.should == true
   end
 
   it "should check if its running" do
@@ -113,6 +142,13 @@ describe Profitbricks::Server do
     s.provisioned?.should == false
   end
   
+  it "should return true on provisioned?" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :connected_storage)
+    s.provisioned?.should == true
+  end
+
   it "should wait for provisioning to finish" do
     savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
@@ -132,6 +168,30 @@ describe Profitbricks::Server do
     savon.expects(:delete_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :delete_server, :success)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.delete.should == true
+  end
+
+  it "should return all Servers" do
+    savon.expects(:get_all_data_centers).with(message: {}).returns(f :get_all_data_centers, :test_datacenter)
+    savon.expects(:get_data_center).with(message: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_data_center, :two_servers_with_storage)
+    #DataCenter.should_receive(:all).and_return
+    servers = Server.all
+    servers.class.should == Array
+    servers.length.should == 2
+    servers.first.class.should == Server
+  end
+
+  describe "nic helper methods" do
+    it "should return all public ip adresses" do
+      savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :two_nics)
+      s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+      s.public_ips.should == ["46.16.73.167"]
+    end
+
+    it "should return all private ip adresses" do
+      savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :two_nics)
+      s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+      s.private_ips.should == ["10.14.38.11"]
+    end
   end
 
   describe "updating" do
