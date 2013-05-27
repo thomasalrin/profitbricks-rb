@@ -23,14 +23,11 @@ module Profitbricks
       def find(options = {})
         image = nil
         if options[:name]
-          image = PB::Image.all().select { |d| d.name == options[:name] }.first
+          image = PB::Image.all().select { |d| d.name == options[:name] && (options[:region] ? d.region == options[:region] : true) }.first
           options[:id] = image.id if image
         end
         raise "Unable to locate the image named '#{options[:name]}'" unless options[:id]
         image
-        # This does not work for public images
-        #response = Profitbricks.request :get_image, "<imageId>#{options[:id]}</imageId>"
-        #PB::Image.new(response.to_hash[:get_image_response][:return])
       end
       
       # Outputs a list of all HDD and/or CD-ROM/DVD images existing on or uploaded to the Profit-Bricks FTP server. 

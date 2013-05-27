@@ -12,6 +12,7 @@ module Profitbricks
     # Reboots an existing virtual server (SOFT REBOOT). 
     # @return [Boolean] true on success, false otherwise
     def reboot
+      @virtual_machine_state = 'NOSTATE'
       Profitbricks.request :reboot_server, server_id: self.id
       return true
     end
@@ -19,6 +20,7 @@ module Profitbricks
     # Resets an existing virtual server (POWER CYCLE).
     # @return [Boolean] true on success, false otherwise
     def reset
+      @virtual_machine_state = 'NOSTATE'
       Profitbricks.request :reset_server, server_id: self.id
       return true
     end
@@ -26,6 +28,7 @@ module Profitbricks
     # Starts an existing virtual server
     # @return [Boolean] true on success, false otherwise
     def start
+      @virtual_machine_state = 'NOSTATE'
       Profitbricks.request :start_server, server_id: self.id
       return true
     end
@@ -33,6 +36,7 @@ module Profitbricks
     # Stops an existing virtual server (HARD power off) 
     # @return [Boolean] true on success, false otherwise
     def power_off
+      @virtual_machine_state = 'SHUTOFF'
       Profitbricks.request :power_off_server, server_id: self.id
       return true
     end
@@ -40,6 +44,7 @@ module Profitbricks
     # Stops an existing virtual server gracefully (SOFT stop)
     # @return [Boolean] true on success, false otherwise
     def shutdown
+      @virtual_machine_state = 'SHUTDOWN'
       Profitbricks.request :shutdown_server, server_id: self.id
       return true
     end

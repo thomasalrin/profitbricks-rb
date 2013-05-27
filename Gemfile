@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'savon'
+gem 'savon', '~> 2.1.0'
 
 group :test, :development do
   gem 'json'
