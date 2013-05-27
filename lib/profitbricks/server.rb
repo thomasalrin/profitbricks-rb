@@ -131,7 +131,7 @@ module Profitbricks
       # 
       # @return [Array <Server>] Array of all available Servers
       def all
-        DataCenter.all.collect(&:servers).flatten!
+        DataCenter.all.collect(&:servers).flatten.compact!
       end
 
       # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a 
@@ -177,6 +177,7 @@ module Profitbricks
 
     private
     def filter_nics_and_return_ips(&block)
+      return [] if self.nics.nil?
       self.nics.select { |nic| yield nic }.collect(&:ips).flatten!
     end 
   end
