@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "profitbricks"
-  s.version = "1.0.0.20130527181530"
+  s.version = "1.0.0.20130527185151"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dominik Sander"]
