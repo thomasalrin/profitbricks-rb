@@ -1,5 +1,6 @@
 module Profitbricks
   class Image < Profitbricks::Model
+    belongs_to :mount_image, :class_name => :image
 
     # Sets the OS Type of an individual HDD and/or CD-ROM/DVD image that has been uploaded on the ProfitBricks FTP server.  
     # 

@@ -28,23 +28,8 @@ module Profitbricks
     def self.belongs_to(model, options = {})
       klass = Profitbricks.get_class model.to_s, options
       @@associations[model] = {:type => :belongs_to, :class => klass}
-      define_method(model) { instance_variable_get("@#{model}") }
-    end
-=begin
-    def get_xml_and_update_attributes(hash, attributes=nil)
-      attributes = hash.keys if attributes.nil?
-      attributes.each do |a|
-        initialize_getter(a, hash[a]) if hash[a]
-      end
-      hash, attributes = self.class.expand_attributes(hash, attributes, self.class)
-      xml = self.class.build_xml(hash, attributes)
     end
 
-    def self.get_xml_and_update_attributes(hash, attributes=[])
-      hash, attributes = expand_attributes(hash, attributes, name())
-      self.build_xml(hash, attributes)
-    end
-=end
     def attributes
       a = {}
       self.instance_variables.each do |variable|
@@ -95,20 +80,7 @@ module Profitbricks
     end
 
     def initialize_belongs_to_association name, association, value
-      self.instance_variable_set("@#{name}", association[:class].send(:new, value, self))
+      initialize_getter name, association[:class].send(:new, value, self)
     end
-=begin
-    def self.expand_attributes(hash, attributes, klass=nil)
-      [:name, :algorithm].each do |a|
-        deleted =  hash.delete(a)
-        if deleted
-          hash["#{klass.to_s.underscore}_#{a.to_s}"] = deleted
-          attributes.delete(a)
-          attributes.push "#{klass.to_s.underscore}_#{a.to_s}"
-        end
-      end
-      return hash, attributes
-    end
-=end
   end
 end

@@ -5,4 +5,5 @@ guard 'rspec', :spec_paths => ["spec/profitbricks"], :exclude => "./spec/live/*"
   watch(%r{^spec/profitbricks/.+_spec\.rb$})
   watch(%r{^lib/profitbricks/(.+)\.rb$})     { |m| "spec/profitbricks/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { "spec" }
+  watch('lib/profitbricks.rb')
 end

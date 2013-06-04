@@ -1,0 +1,21 @@
+{
+    "get_storage_response": {
+        "@xmlns:ns2": "http://ws.api.profitbricks.com/",
+        "return": {
+            "creation_time": "2013-05-27T16:20:24.166Z",
+            "data_center_id": "ba0fe96f-394e-af75-358e-27ed949edf9e",
+            "data_center_version": "2",
+            "last_modification_time": "2013-05-27T16:20:24.166Z",
+            "mount_image": {
+                "image_id": "9a91d341-92ff-11e2-8358-0025901dfe2a",
+                "image_name": "Ubuntu-12.04-LTS-server-amd64-03.21.13.img"
+            },
+            "os_type": "OTHER",
+            "provisioning_state": "AVAILABLE",
+            "server_ids": "83c716cd-8471-7030-d6ee-1066855657b5",
+            "size": "10",
+            "storage_id": "0e3f262c-c014-d66e-0f81-9faac27c41c8",
+            "storage_name": "Storage 1"
+        }
+    }
+}

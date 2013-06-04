@@ -180,6 +180,14 @@ describe Profitbricks::Server do
     servers.first.class.should == Server
   end
 
+  it "should return all connected_storages via the storages helper" do
+    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :connected_storage)
+    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
+    s.connected_storages.class.should == Array
+    s.connected_storages.length.should == 1
+    s.connected_storages.first.class.should == Storage
+  end
+
   describe "nic helper methods" do
     it "should return all public ip adresses" do
       savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :two_nics)

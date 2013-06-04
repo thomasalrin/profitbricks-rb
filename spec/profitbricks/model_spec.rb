@@ -11,6 +11,10 @@ module Profitbricks
   class ModelBelongsToTest < Profitbricks::Model
    belongs_to :model_has_many_test
   end
+
+  class ModelBelongsToWithClassNameTest < Profitbricks::Model
+   belongs_to :undefined_model, :class_name => :model_test
+  end
 end
 
 describe Profitbricks::Model do
@@ -43,6 +47,12 @@ describe Profitbricks::Model do
     mt.model_has_many_test.name.should == 'One'
   end
   
+  it "should create a belongs_to association with class_name correclty" do
+    mt = Profitbricks::ModelBelongsToWithClassNameTest.new( :undefined_model => {:name => 'One'} )
+    mt.undefined_model.class.should == Profitbricks::ModelTest
+    mt.undefined_model.name.should == 'One'
+  end
+
   it "should raise an LoadError exception" do
     lambda {
       module Profitbricks

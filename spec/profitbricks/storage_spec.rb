@@ -22,7 +22,7 @@ describe Profitbricks::Storage do
     storage.connect(:server_id => "4cb6550f-3777-4818-8f4c-51233162a980", :bus_type => "VIRTIO").should == true
     s = Server.find(:id => "4cb6550f-3777-4818-8f4c-51233162a980")
     # FIXME
-    s.connected_storages[:storage_name].should == "Test Storage"
+    s.connected_storages.first.name.should == "Test Storage"
   end
 
   it "should be disconnectable from a server" do
@@ -46,5 +46,11 @@ describe Profitbricks::Storage do
     savon.expects(:delete_storage).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11'}).returns(f :delete_storage, :success)
     storage = Storage.find(:id => "f55952bc-da27-4e29-af89-ed212ea28e11")
     storage.delete.should == true
+  end
+
+  it "should correctly declare the mount_image attribute" do
+    savon.expects(:get_storage).with(message: {storage_id: "0e3f262c-c014-d66e-0f81-9faac27c41c8"}).returns(f :get_storage, :mount_image)
+    storage = Storage.find(:id => "0e3f262c-c014-d66e-0f81-9faac27c41c8")
+    storage.mount_image.class.should == Image
   end
 end

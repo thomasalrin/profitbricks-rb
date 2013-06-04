@@ -1,6 +1,7 @@
 module Profitbricks
   class Server < Profitbricks::Model
     has_many :nics
+    has_many :connected_storages, :class_name => :storage
 
     # Deletes the virtual Server. 
     # @return [Boolean] true on success, false otherwise

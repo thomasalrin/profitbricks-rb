@@ -91,10 +91,10 @@ module Profitbricks
       klass = Profitbricks.const_get(klass)
     else
       begin
-        require "profitbricks/#{name.downcase}"
+        require "profitbricks/#{klass.downcase}"
         klass = Profitbricks.const_get(klass)
       rescue LoadError
-        raise LoadError.new("Invalid association, could not locate the class '#{name}'")
+        raise LoadError.new("Invalid association, could not locate the class '#{klass}'")
       end
     end
     klass
