@@ -98,7 +98,7 @@ module Profitbricks
       # @option options [Array<Server>] :servers Array of servers to connect to the LoadBalancer
       # @return [LoadBalancer] The created LoadBalancer
       def create(options = {})
-        options[:server_ids] = options.delete(:servers).collect(&:id)
+        options[:server_ids] = options.delete(:servers).collect(&:id) if options[:servers]
         response = Profitbricks.request :create_load_balancer, options
         self.find(:id => response[:load_balancer_id])
       end
