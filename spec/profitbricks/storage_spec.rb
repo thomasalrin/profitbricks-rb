@@ -16,7 +16,7 @@ describe Profitbricks::Storage do
 
   it "should be connectable to a server" do
     savon.expects(:get_storage).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11'}).returns(f :get_storage, :success)
-    savon.expects(:connect_storage_to_server).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', server_id: '4cb6550f-3777-4818-8f4c-51233162a980', bus_type: 'VIRTIO'}).returns(f :connect_storage_to_server, :success)
+    savon.expects(:connect_storage_to_server).with(message: {arg0: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', server_id: '4cb6550f-3777-4818-8f4c-51233162a980', bus_type: 'VIRTIO'}}).returns(f :connect_storage_to_server, :success)
     savon.expects(:get_server).with(message: {server_id: '4cb6550f-3777-4818-8f4c-51233162a980'}).returns(f :get_server, :connected_storage)
     storage = Storage.find(:id => "f55952bc-da27-4e29-af89-ed212ea28e11")
     storage.connect(:server_id => "4cb6550f-3777-4818-8f4c-51233162a980", :bus_type => "VIRTIO").should == true

@@ -1,7 +1,7 @@
 module Profitbricks
   NEED_PREFIX = [:create_nic, :create_load_balancer, :update_storage, :create_storage,
                  :update_data_center, :rom_drive, :update_nic, :create_server,
-                 :update_load_balancer, :connect_storage, :update_server]
+                 :update_load_balancer, :connect_storage_to_server, :update_server]
 
   # Configure the Profitbricks API client
   #
