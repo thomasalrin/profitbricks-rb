@@ -56,6 +56,7 @@ module Profitbricks
       # @option options [:data_center_id] Defines the data center wherein the storage is to be created. If left empty, the storage will be created in a new data center
       # @option options [:name] Name of the storage to be created
       # @option options [:mount_image_id] Specifies the image to be assigned to the storage by its ID. Either choose a HDD or a CD-ROM/DVD (ISO) image
+      # @option options [:profit_bricks_image_password] Sets the VM image root login password to the specified value. Only supported for generic Profitbricks HDD images. User images are expected to be preconfigured with a password. If no password is supplied, one is automatically created. Please see error codes for password syntax rules.]
       # @return [Storage] The created Storage
       def create(options = {})
         raise ArgumentError.new("You must provide a :data_center_id") if options[:data_center_id].nil?
