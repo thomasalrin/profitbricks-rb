@@ -1,4 +1,6 @@
+
 module Profitbricks
+  class AuthenticationError < StandardError; end
   NEED_PREFIX = [:create_nic, :create_load_balancer, :update_storage, :create_storage,
                  :update_data_center, :rom_drive, :update_nic, :create_server,
                  :update_load_balancer, :connect_storage_to_server, :update_server]
@@ -16,9 +18,12 @@ module Profitbricks
     HTTPI.log = false
 
     @client = Savon::Client.new do |globals|
-      globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
+      # FIXME the WSDL currently returns a wrong endpoint
+      #globals.wsdl "https://api.profitbricks.com/1.2/wsdl"
+      globals.namespace "http://ws.api.profitbricks.com/"
+      globals.endpoint "https://api.profitbricks.com/1.2"
       globals.convert_request_keys_to :lower_camelcase
-      globals.raise_errors true 
+      globals.raise_errors true
       globals.log Profitbricks::Config.log
       globals.pretty_print_xml true
 
@@ -41,7 +46,7 @@ module Profitbricks
     end
   end
 
-  private 
+  private
   def self.request(method, options={})
     begin
       message = if NEED_PREFIX.include? method
@@ -60,6 +65,12 @@ module Profitbricks
       puts error.to_hash
       puts "--------------------------------------------------------------------------"
       raise RuntimeError.new("Error during request '#{method}': #{error.to_s}")
+    rescue Savon::HTTPError => error
+      if error.to_hash[:code] == 401
+        raise AuthenticationError.new('Failed to authenticate.')
+      else
+        raise error
+      end
     end
     (resp.body["#{method}_response".to_sym] || resp.body["#{method}_return".to_sym])[:return]
   end

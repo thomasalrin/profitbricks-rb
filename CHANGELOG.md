@@ -1,7 +1,12 @@
+=== 1.0.1 / 2013-07-09
+
+  * Raise an Profitbricks::AuthenticationError when the authentication failed
+  * Temporarily hardcoded the endpoint and namespace
+
 === 0.9.5 / 2013-02-16
 
 * 1 bug fix:
-  * Cast the passed options to Server#create before checking for validity  
+  * Cast the passed options to Server#create before checking for validity
 
 === 0.9.1 / 2012-05-16
 
