@@ -1,4 +1,4 @@
-# Profitbricks [![Build Status](https://secure.travis-ci.org/dsander/profitbricks.png?branch=master)](http://travis-ci.org/dsander/profitbricks) [![Coverage Status](https://coveralls.io/repos/dsander/profitbricks/badge.png?branch=master)](https://coveralls.io/r/dsander/profitbricks) [![Code Climate](https://codeclimate.com/github/dsander/profitbricks.png)](https://codeclimate.com/github/dsander/profitbricks)
+# Profitbricks [![Build Status](https://secure.travis-ci.org/profitbricks/profitbricks-rb.png?branch=master)](http://travis-ci.org/profitbricks/profitbricks-rb) [![Coverage Status](https://coveralls.io/repos/profitbricks/profitbricks-rb/badge.png?branch=master)](https://coveralls.io/r/profitbricks/profitbricks-rb) [![Code Climate](https://codeclimate.com/github/profitbricks/profitbricks-rb.png)](https://codeclimate.com/github/dsander/profitbricks-rb)
 
 * https://github.com/profitbricks/profitbricks-rb
 * http://rubydoc.info/github/profitbricks/profitbricks-rb/master/frames

@@ -5,8 +5,8 @@ describe Profitbricks::Server do
 
   before(:all) { savon.mock!   }
   after(:all)  { savon.unmock! }
-  
-  describe "enforcing required arguments" do 
+
+  describe "enforcing required arguments" do
     describe "on create" do
       it "should require :cores and :ram" do
         expect { Server.create(:cores => 1) }.to raise_error(ArgumentError, "You must provide :cores and :ram")
@@ -25,7 +25,7 @@ describe Profitbricks::Server do
           raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
 
         ['AUTO', 'ZONE_1', 'ZONE_2'].each do |zone|
-          expect { Server.create(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to 
+          expect { Server.create(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to
             raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
         end
       end
@@ -35,7 +35,7 @@ describe Profitbricks::Server do
           raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
 
         ['WINDOWS', 'OTHER'].each do |type|
-          expect { Server.create(:ram => 256, :cores => 1, :os_type => type) }.not_to 
+          expect { Server.create(:ram => 256, :cores => 1, :os_type => type) }.not_to
             raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
         end
       end
@@ -58,7 +58,7 @@ describe Profitbricks::Server do
           raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
 
         ['AUTO', 'ZONE_1', 'ZONE_2'].each do |zone|
-          expect { @server.update(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to 
+          expect { @server.update(:ram => 256, :cores => 1, :availability_zone => zone) }.not_to
             raise_error(ArgumentError, ":availability_zone has to be either 'AUTO', 'ZONE_1', or 'ZONE_2'")
         end
       end
@@ -68,7 +68,7 @@ describe Profitbricks::Server do
           raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
 
         ['WINDOWS', 'OTHER'].each do |type|
-          expect { @server.update(:ram => 256, :cores => 1, :os_type => type) }.not_to 
+          expect { @server.update(:ram => 256, :cores => 1, :os_type => type) }.not_to
             raise_error(ArgumentError, ":os_type has to be either 'WINDOWS' or 'OTHER'")
         end
       end
@@ -84,13 +84,6 @@ describe Profitbricks::Server do
     s.ram.should == 256
     s.name.should == 'Test Server'
     s.data_center_id.should == "b3eebede-5c78-417c-b1bc-ff5de01a0602"
-  end
-
-  it "should reboot on request" do
-    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
-    savon.expects(:reboot_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :reboot_server, :success)
-    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
-    s.reboot.should == true
   end
 
   it "should reset on request" do
@@ -109,16 +102,9 @@ describe Profitbricks::Server do
 
   it "should power off on request" do
     savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
-    savon.expects(:power_off_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :power_off_server, :success)
+    savon.expects(:stop_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :stop_server, :success)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
-    s.power_off.should == true
-  end
-
-  it "should shutdown on request" do
-    savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
-    savon.expects(:shutdown_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :shutdown_server, :success)
-    s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
-    s.shutdown.should == true
+    s.stop.should == true
   end
 
   it "should check if its running" do
@@ -141,7 +127,7 @@ describe Profitbricks::Server do
     savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
     s.provisioned?.should == false
   end
-  
+
   it "should return true on provisioned?" do
     savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
     s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
@@ -203,7 +189,7 @@ describe Profitbricks::Server do
   end
 
   describe "updating" do
-    it "should update basic attributes correctly" do 
+    it "should update basic attributes correctly" do
       savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
       savon.expects(:update_server).with(message: {arg0: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'Power of two', os_type: 'WINDOWS', cores: 2, ram: 512}}).returns(f :update_server, :basic)
       s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")

@@ -1,1 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?><S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"><S:Body><ns2:shutdownServerResponse xmlns:ns2="http://ws.api.profitbricks.com/"><return><requestId>50056</requestId></return></ns2:shutdownServerResponse></S:Body></S:Envelope>

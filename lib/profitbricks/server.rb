@@ -3,18 +3,10 @@ module Profitbricks
     has_many :nics
     has_many :connected_storages, :class_name => :storage
 
-    # Deletes the virtual Server. 
+    # Deletes the virtual Server.
     # @return [Boolean] true on success, false otherwise
     def delete
       Profitbricks.request :delete_server, server_id: self.id
-      return true
-    end
-    
-    # Reboots an existing virtual server (SOFT REBOOT). 
-    # @return [Boolean] true on success, false otherwise
-    def reboot
-      @virtual_machine_state = 'NOSTATE'
-      Profitbricks.request :reboot_server, server_id: self.id
       return true
     end
 
@@ -34,23 +26,15 @@ module Profitbricks
       return true
     end
 
-    # Stops an existing virtual server (HARD power off) 
+    # Stops an existing virtual server (HARD power off)
     # @return [Boolean] true on success, false otherwise
-    def power_off
+    def stop
       @virtual_machine_state = 'SHUTOFF'
-      Profitbricks.request :power_off_server, server_id: self.id
+      Profitbricks.request :stop_server, server_id: self.id
       return true
     end
 
-    # Stops an existing virtual server gracefully (SOFT stop)
-    # @return [Boolean] true on success, false otherwise
-    def shutdown
-      @virtual_machine_state = 'SHUTDOWN'
-      Profitbricks.request :shutdown_server, server_id: self.id
-      return true
-    end
-
-    # Updates parameters of an existing virtual Server device. 
+    # Updates parameters of an existing virtual Server device.
     # @param [Hash] options parameters for the new server
     # @option options [Fixnum] :cores Number of cores to be assigned to the specified server.
     # @option options [Fixnum] :ram Number of RAM memory (in MiB) to be assigned to the server. Must be at least 256 and a multiple of it.
@@ -129,15 +113,15 @@ module Profitbricks
 
     class << self
       # Returns a list of all Servers created by the user.
-      # 
+      #
       # @return [Array <Server>] Array of all available Servers
       def all
         DataCenter.all.collect(&:servers).flatten.compact
       end
 
-      # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a 
+      # Creates a Virtual Server within an existing data center. Parameters can be specified to set up a
       # boot device and connect the server to an existing LAN or the Internet.
-      # 
+      #
       # @param [Hash] options parameters for the new server
       # @option options [Fixnum] :cores Number of cores to be assigned to the specified server (required)
       # @option options [Fixnum] :ram Number of RAM memory (in MiB) to be assigned to the server. Must be at least 256 and a multiple of it. (required)
@@ -180,6 +164,6 @@ module Profitbricks
     def filter_nics_and_return_ips(&block)
       return [] if self.nics.nil?
       self.nics.select { |nic| yield nic }.collect(&:ips).flatten
-    end 
+    end
   end
 end
