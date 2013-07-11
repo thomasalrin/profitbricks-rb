@@ -24,6 +24,8 @@ module Profitbricks
       globals.raise_errors true
       globals.log Profitbricks::Config.log
       globals.pretty_print_xml true
+      globals.open_timeout 5
+      globals.read_timeout 5
 
       # Looks like ssl verifycation works with current jruby
       #if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']
