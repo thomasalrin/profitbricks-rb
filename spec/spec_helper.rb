@@ -38,57 +38,15 @@ Profitbricks.configure do |config|
   config.polling_interval = 0.1 
 end
 
-
-require "httpi"
-
-# FIXME trying to debug travis-ci build issues
-module Wasabi
-  class Resolver
-    private
-    def load_from_remote
-      request.url = document
-      response = HTTPI.get(request)
-      raise HTTPError.new("Error: #{response.code}", response) if response.error?
-
-      response.body
-    end
-  end
+client = Savon::Client.new do |globals|
+  globals.namespace "http://ws.api.profitbricks.com/"
+  globals.endpoint "https://api.profitbricks.com/1.2"
+  globals.convert_request_keys_to :lower_camelcase
+  globals.raise_errors true
+  globals.log Profitbricks::Config.log
+  globals.pretty_print_xml true
+  globals.open_timeout 5
+  globals.read_timeout 5
+  globals.basic_auth [Profitbricks::Config.username, Profitbricks::Config.password]
 end
-$once = false
-require 'pp'
-module Savon
-  class Operation
-    def self.ensure_exists!(operation_name, wsdl)
-      if $once == false
-        pp wsdl.soap_actions
-        pp wsdl.operations
-        $once = true
-      end
-      unless wsdl.soap_actions.include? operation_name
-        raise UnknownOperationError, "Unable to find SOAP operation: #{operation_name.inspect}\n" \
-                                     "Operations provided by your service: #{wsdl.soap_actions.inspect}"
-      end
-    end
-
-  end
-end
-require "nokogiri"
-require "wasabi/resolver"
-require "wasabi/parser"
-
-module Wasabi
-
-  # = Wasabi::Document
-  #
-  # Represents a WSDL document.
-  class Document
-  private
-    # Parses the WSDL document and returns <tt>Wasabi::Parser</tt>.
-    def parse
-      parser = Parser.new Nokogiri::XML(xml)
-      parser.parse
-      pp parser.operations
-      parser
-    end
-  end
-end
+Profitbricks.client = client
