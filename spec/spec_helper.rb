@@ -48,10 +48,27 @@ module Wasabi
     def load_from_remote
       request.url = document
       response = HTTPI.get(request)
-      puts response.body
       raise HTTPError.new("Error: #{response.code}", response) if response.error?
 
       response.body
     end
+  end
+end
+$once = false
+module Savon
+  class Operation
+    def self.ensure_exists!(operation_name, wsdl)
+      require 'pp'
+      if $once == false
+        pp wsdl.soap_actions
+        pp wsdl.operations
+        $once = true
+      end
+      unless wsdl.soap_actions.include? operation_name
+        raise UnknownOperationError, "Unable to find SOAP operation: #{operation_name.inspect}\n" \
+                                     "Operations provided by your service: #{wsdl.soap_actions.inspect}"
+      end
+    end
+
   end
 end
