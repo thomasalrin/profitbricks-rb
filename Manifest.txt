@@ -112,10 +112,6 @@ spec/fixtures/get_storage/mount_image.json
 spec/fixtures/get_storage/mount_image.xml
 spec/fixtures/get_storage/success.json
 spec/fixtures/get_storage/success.xml
-spec/fixtures/power_off_server/success.json
-spec/fixtures/power_off_server/success.xml
-spec/fixtures/reboot_server/success.json
-spec/fixtures/reboot_server/success.xml
 spec/fixtures/register_servers_on_load_balancer/success.json
 spec/fixtures/register_servers_on_load_balancer/success.xml
 spec/fixtures/release_public_ip_block/success.json
@@ -132,10 +128,10 @@ spec/fixtures/set_image_os_type/success.json
 spec/fixtures/set_image_os_type/success.xml
 spec/fixtures/set_internet_access/success.json
 spec/fixtures/set_internet_access/success.xml
-spec/fixtures/shutdown_server/success.json
-spec/fixtures/shutdown_server/success.xml
 spec/fixtures/start_server/success.json
 spec/fixtures/start_server/success.xml
+spec/fixtures/stop_server/success.json
+spec/fixtures/stop_server/success.xml
 spec/fixtures/update_data_center/success.json
 spec/fixtures/update_data_center/success.xml
 spec/fixtures/update_load_balancer/success.json
