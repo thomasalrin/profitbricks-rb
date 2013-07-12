@@ -37,3 +37,21 @@ Profitbricks.configure do |config|
   config.password = "none"
   config.polling_interval = 0.1 
 end
+
+
+require "httpi"
+
+# FIXME trying to debug travis-ci build issues
+module Wasabi
+  class Resolver
+    private
+    def load_from_remote
+      request.url = document
+      response = HTTPI.get(request)
+      puts response.body
+      raise HTTPError.new("Error: #{response.code}", response) if response.error?
+
+      response.body
+    end
+  end
+end
