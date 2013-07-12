@@ -55,10 +55,10 @@ module Wasabi
   end
 end
 $once = false
+require 'pp'
 module Savon
   class Operation
     def self.ensure_exists!(operation_name, wsdl)
-      require 'pp'
       if $once == false
         pp wsdl.soap_actions
         pp wsdl.operations
@@ -70,5 +70,25 @@ module Savon
       end
     end
 
+  end
+end
+require "nokogiri"
+require "wasabi/resolver"
+require "wasabi/parser"
+
+module Wasabi
+
+  # = Wasabi::Document
+  #
+  # Represents a WSDL document.
+  class Document
+  private
+    # Parses the WSDL document and returns <tt>Wasabi::Parser</tt>.
+    def parse
+      pp xml
+      parser = Parser.new Nokogiri::XML(xml)
+      pp parser.parse
+      parser
+    end
   end
 end
