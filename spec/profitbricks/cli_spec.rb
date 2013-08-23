@@ -67,7 +67,7 @@ describe Profitbricks::CLI do
 
   it "should update a server" do
     savon.expects(:get_server).with(message: {server_id: '1234-123'}).returns(f :get_server, :after_create)
-    savon.expects(:update_server).with(message: {arg0: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'meme', ram: 256, cores: 1}}).returns(f :update_server, :basic)
+    savon.expects(:update_server).with(message: {request: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'meme', ram: 256, cores: 1}}).returns(f :update_server, :basic)
     cli.run(%w(server update id=1234-123 name=meme ram=256 cores=1)).should == 0
   end
 end

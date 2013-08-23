@@ -9,7 +9,7 @@ describe Profitbricks::LoadBalancer do
   let(:servers) { [Server.new(:id => "206d10f2-035f-4ef2-8d24-3022653e9706")]}
 
   it "create a new LoadBalancer" do
-    create_msg = {arg0: {data_center_id: "1111", name: "Test", server_ids: servers.collect(&:id), algorithm: 'ROUND_ROBIN'}}
+    create_msg = {request: {data_center_id: "1111", name: "Test", server_ids: servers.collect(&:id), algorithm: 'ROUND_ROBIN'}}
     savon.expects(:create_load_balancer).with(message: create_msg).returns(f :create_load_balancer, :success)
     savon.expects(:get_load_balancer).with(message: {load_balancer_id: '5dadd2b2-3405-4ec5-a450-0df497bebab0'}).returns(f :get_load_balancer, :success)
     lb = LoadBalancer.create(:data_center_id => "1111", :name => "Test", :servers => servers, :algorithm => 'ROUND_ROBIN')
@@ -20,7 +20,7 @@ describe Profitbricks::LoadBalancer do
 
   it "should update an existing LoadBalancer" do
     savon.expects(:get_load_balancer).with(message: {load_balancer_id: '5dadd2b2-3405-4ec5-a450-0df497bebab0'}).returns(f :get_load_balancer, :success)
-    savon.expects(:update_load_balancer).with(message: {arg0: {load_balancer_id: '3e3cb642-4d50-4371-980a-65959b2fa428', load_balancer_name: 'Wee'}}).returns(f :update_load_balancer, :success)
+    savon.expects(:update_load_balancer).with(message: {request: {load_balancer_id: '3e3cb642-4d50-4371-980a-65959b2fa428', load_balancer_name: 'Wee'}}).returns(f :update_load_balancer, :success)
     savon.expects(:get_load_balancer).with(message: {load_balancer_id: '3e3cb642-4d50-4371-980a-65959b2fa428'}).returns(f :get_load_balancer, :success)
     lb = LoadBalancer.find(:id => "5dadd2b2-3405-4ec5-a450-0df497bebab0")
     lb.update(:name => "Wee").should == true

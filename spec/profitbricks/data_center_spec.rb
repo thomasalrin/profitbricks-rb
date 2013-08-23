@@ -73,7 +73,7 @@ describe Profitbricks::DataCenter do
     dc.wait_for_provisioning
   end
   
-  let(:rename_message) { {arg0: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602', data_center_name: 'Test2'}} }
+  let(:rename_message) { {request: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602', data_center_name: 'Test2'}} }
   it "should rename a datacenter" do
     savon.expects(:get_data_center).with(message: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_data_center, :two_servers_with_storage)
     savon.expects(:update_data_center).with(message: rename_message).returns(f :update_data_center, :success)

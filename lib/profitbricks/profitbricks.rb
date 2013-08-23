@@ -4,7 +4,6 @@ module Profitbricks
   NEED_PREFIX = [:create_nic, :create_load_balancer, :update_storage, :create_storage,
                  :update_data_center, :rom_drive, :update_nic, :create_server,
                  :update_load_balancer, :connect_storage_to_server, :update_server]
-
   # Configure the Profitbricks API client
   #
   # @see Profitbricks::Config
@@ -50,7 +49,7 @@ module Profitbricks
   def self.request(method, options={})
     begin
       message = if NEED_PREFIX.include? method
-        { arg0: options }
+        { request: options }
       else
         options
       end

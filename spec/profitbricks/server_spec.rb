@@ -42,7 +42,7 @@ describe Profitbricks::Server do
     end
     describe "on update" do
       before(:each) do
-        savon.expects(:create_server).with(message: {arg0: {ram: 256, cores: 1}}).returns(f :create_server, :minimal)
+        savon.expects(:create_server).with(message: {request: {ram: 256, cores: 1}}).returns(f :create_server, :minimal)
         savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
         @server = Server.create(:ram => 256, :cores => 1)
       end
@@ -77,7 +77,7 @@ describe Profitbricks::Server do
 
 
   it "should create a new server with minimal arguments" do
-    savon.expects(:create_server).with(message: {arg0: {ram: 256, cores: 1, server_name: 'Test Server', data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}}).returns(f :create_server, :minimal)
+    savon.expects(:create_server).with(message: {request: {ram: 256, cores: 1, server_name: 'Test Server', data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}}).returns(f :create_server, :minimal)
     savon.expects(:get_server).with(message: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f'}).returns(f :get_server, :after_create)
     s = Server.create(:cores => 1, :ram => 256, :name => 'Test Server', :data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     s.cores.should == 1
@@ -191,7 +191,7 @@ describe Profitbricks::Server do
   describe "updating" do
     it "should update basic attributes correctly" do
       savon.expects(:get_server).with(message: {server_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602'}).returns(f :get_server, :after_create)
-      savon.expects(:update_server).with(message: {arg0: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'Power of two', os_type: 'WINDOWS', cores: 2, ram: 512}}).returns(f :update_server, :basic)
+      savon.expects(:update_server).with(message: {request: {server_id: 'b7a5f3d1-324a-4490-aa8e-56cdec436e3f', server_name: 'Power of two', os_type: 'WINDOWS', cores: 2, ram: 512}}).returns(f :update_server, :basic)
       s = Server.find(:id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
       s.update(:cores => 2, :ram => 512, :name => "Power of two", :os_type => 'WINDOWS')
       s.cores.should == 2

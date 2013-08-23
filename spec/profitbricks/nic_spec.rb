@@ -7,7 +7,7 @@ describe Profitbricks::Nic do
   after(:all)  { savon.unmock! }
 
   it "create a new Nic" do
-    savon.expects(:create_nic).with(message: {arg0: {lan_id: 1, ip: '192.168.0.11', nic_name: 'Internal', server_id: '4cb6550f-3777-4818-8f4c-51233162a980'}}).returns(f :create_nic, :success)
+    savon.expects(:create_nic).with(message: {request: {lan_id: 1, ip: '192.168.0.11', nic_name: 'Internal', server_id: '4cb6550f-3777-4818-8f4c-51233162a980'}}).returns(f :create_nic, :success)
     savon.expects(:get_nic).with(message: {nic_id: 'cba8af39-b5de-477b-9795-2f02ea9cf04f'}).returns(f :get_nic, :success)
     nic = Nic.create(:lan_id => 1, :ip => "192.168.0.11", :name => "Internal", :server_id => "4cb6550f-3777-4818-8f4c-51233162a980")
     nic.name.should == "Internal"
@@ -17,7 +17,7 @@ describe Profitbricks::Nic do
 
   it "should update an existing Nic" do
     savon.expects(:get_nic).with(message: {nic_id: 'cba8af39-b5de-477b-9795-2f02ea9cf04f'}).returns(f :get_nic, :success)
-    savon.expects(:update_nic).with(message: {arg0: {nic_id: 'cba8af39-b5de-477b-9795-2f02ea9cf04f', nic_name: 'External'}}).returns(f :update_nic, :success)
+    savon.expects(:update_nic).with(message: {request: {nic_id: 'cba8af39-b5de-477b-9795-2f02ea9cf04f', nic_name: 'External'}}).returns(f :update_nic, :success)
     nic = Nic.find(:id => "cba8af39-b5de-477b-9795-2f02ea9cf04f")
     nic.update(:name => "External").should == true
     nic.name.should == "External"

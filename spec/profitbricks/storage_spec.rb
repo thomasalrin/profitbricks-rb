@@ -7,7 +7,7 @@ describe Profitbricks::Storage do
   after(:all)  { savon.unmock! }
 
   it "should create a new server with minimal arguments" do
-    savon.expects(:create_storage).with(message: {arg0: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602', size: 5, storage_name: 'Test Storage'}}).returns(f :create_storage, :success)
+    savon.expects(:create_storage).with(message: {request: {data_center_id: 'b3eebede-5c78-417c-b1bc-ff5de01a0602', size: 5, storage_name: 'Test Storage'}}).returns(f :create_storage, :success)
     savon.expects(:get_storage).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11'}).returns(f :get_storage, :success)
     storage = Storage.create(:size => 5, :name => "Test Storage", :data_center_id => "b3eebede-5c78-417c-b1bc-ff5de01a0602")
     storage.name.should == "Test Storage"
@@ -16,7 +16,7 @@ describe Profitbricks::Storage do
 
   it "should be connectable to a server" do
     savon.expects(:get_storage).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11'}).returns(f :get_storage, :success)
-    savon.expects(:connect_storage_to_server).with(message: {arg0: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', server_id: '4cb6550f-3777-4818-8f4c-51233162a980', bus_type: 'VIRTIO'}}).returns(f :connect_storage_to_server, :success)
+    savon.expects(:connect_storage_to_server).with(message: {request: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', server_id: '4cb6550f-3777-4818-8f4c-51233162a980', bus_type: 'VIRTIO'}}).returns(f :connect_storage_to_server, :success)
     savon.expects(:get_server).with(message: {server_id: '4cb6550f-3777-4818-8f4c-51233162a980'}).returns(f :get_server, :connected_storage)
     storage = Storage.find(:id => "f55952bc-da27-4e29-af89-ed212ea28e11")
     storage.connect(:server_id => "4cb6550f-3777-4818-8f4c-51233162a980", :bus_type => "VIRTIO").should == true
@@ -34,7 +34,7 @@ describe Profitbricks::Storage do
   
   it "should be updated" do
     savon.expects(:get_storage).with(message: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11'}).returns(f :get_storage, :success)
-    savon.expects(:update_storage).with(message: {arg0: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', size: 10, storage_name: 'Updated'}}).returns(f :update_storage, :success)
+    savon.expects(:update_storage).with(message: {request: {storage_id: 'f55952bc-da27-4e29-af89-ed212ea28e11', size: 10, storage_name: 'Updated'}}).returns(f :update_storage, :success)
     storage = Storage.find(:id => "f55952bc-da27-4e29-af89-ed212ea28e11")
     storage.update(:name => "Updated", :size => 10).should == true
     storage.name.should == "Updated"
