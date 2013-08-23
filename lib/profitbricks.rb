@@ -15,7 +15,7 @@ require 'profitbricks/ip_block'
 require 'profitbricks/rule'
 
 module Profitbricks
-  VERSION = '1.0.2'
+  VERSION = '1.0.3'
 end
 
 PB = Profitbricks

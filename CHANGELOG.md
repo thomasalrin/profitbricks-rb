@@ -1,3 +1,7 @@
+=== 1.0.3 / 2013-08-23
+
+  * Bugfix: The 'arg0' argument got renamed to 'request'
+
 === 1.0.1 / 2013-07-09
 
   * Raise an Profitbricks::AuthenticationError when the authentication failed
