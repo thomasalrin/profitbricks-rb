@@ -24,6 +24,7 @@ lib/profitbricks/nic.rb
 lib/profitbricks/profitbricks.rb
 lib/profitbricks/rule.rb
 lib/profitbricks/server.rb
+lib/profitbricks/snapshot.rb
 lib/profitbricks/storage.rb
 profitbricks.gemspec
 spec/fixtures/activate_firewalls/success.json
@@ -48,6 +49,8 @@ spec/fixtures/create_nic/success.json
 spec/fixtures/create_nic/success.xml
 spec/fixtures/create_server/minimal.json
 spec/fixtures/create_server/minimal.xml
+spec/fixtures/create_snapshot/success.json
+spec/fixtures/create_snapshot/success.xml
 spec/fixtures/create_storage/success.json
 spec/fixtures/create_storage/success.xml
 spec/fixtures/deactivate_firewalls/success.json
@@ -64,6 +67,8 @@ spec/fixtures/delete_nic/success.json
 spec/fixtures/delete_nic/success.xml
 spec/fixtures/delete_server/success.json
 spec/fixtures/delete_server/success.xml
+spec/fixtures/delete_snapshot/success.json
+spec/fixtures/delete_snapshot/success.xml
 spec/fixtures/delete_storage/failture.json
 spec/fixtures/delete_storage/failture.xml
 spec/fixtures/delete_storage/success.json
@@ -82,6 +87,8 @@ spec/fixtures/get_all_images/success.json
 spec/fixtures/get_all_images/success.xml
 spec/fixtures/get_all_public_ip_blocks/success.json
 spec/fixtures/get_all_public_ip_blocks/success.xml
+spec/fixtures/get_all_snapshots/success.json
+spec/fixtures/get_all_snapshots/success.xml
 spec/fixtures/get_data_center/create.json
 spec/fixtures/get_data_center/create.xml
 spec/fixtures/get_data_center/firewall.json
@@ -108,6 +115,8 @@ spec/fixtures/get_server/connected_storage.json
 spec/fixtures/get_server/connected_storage.xml
 spec/fixtures/get_server/two_nics.json
 spec/fixtures/get_server/two_nics.xml
+spec/fixtures/get_snapshot/success.json
+spec/fixtures/get_snapshot/success.xml
 spec/fixtures/get_storage/mount_image.json
 spec/fixtures/get_storage/mount_image.xml
 spec/fixtures/get_storage/success.json
@@ -124,6 +133,8 @@ spec/fixtures/reserve_public_ip_block/success.json
 spec/fixtures/reserve_public_ip_block/success.xml
 spec/fixtures/reset_server/success.json
 spec/fixtures/reset_server/success.xml
+spec/fixtures/rollback_snapshot/success.json
+spec/fixtures/rollback_snapshot/success.xml
 spec/fixtures/set_image_os_type/success.json
 spec/fixtures/set_image_os_type/success.xml
 spec/fixtures/set_internet_access/success.json
@@ -140,6 +151,8 @@ spec/fixtures/update_nic/success.json
 spec/fixtures/update_nic/success.xml
 spec/fixtures/update_server/basic.json
 spec/fixtures/update_server/basic.xml
+spec/fixtures/update_snapshot/success.json
+spec/fixtures/update_snapshot/success.xml
 spec/fixtures/update_storage/success.json
 spec/fixtures/update_storage/success.xml
 spec/live/data_center_spec.rb
@@ -153,5 +166,6 @@ spec/profitbricks/load_balancer_spec.rb
 spec/profitbricks/model_spec.rb
 spec/profitbricks/nic_spec.rb
 spec/profitbricks/server_spec.rb
+spec/profitbricks/snapshot_spec.rb
 spec/profitbricks/storage_spec.rb
 spec/spec_helper.rb

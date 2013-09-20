@@ -1,3 +1,7 @@
+=== 1.1.0 / 2013-09-20
+  
+  * Added support for Snapshots
+
 === 1.0.3 / 2013-08-23
 
   * Bugfix: The 'arg0' argument got renamed to 'request'
