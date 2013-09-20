@@ -1,0 +1,19 @@
+{
+  "get_snapshot_response": {
+    "return": {
+      "snapshot_id": "77b618a5-18c3-49ec-8c5e-ef13dc905dce",
+      "description": "description",
+      "snapshot_size": "20480",
+      "snapshot_name": "test",
+      "provisioning_state": "INPROCESS",
+      "bootable": true,
+      "os_type": "UNKNOWN",
+      "cpu_hot_plug": false,
+      "ram_hot_plug": false,
+      "nic_hot_plug": false,
+      "nic_hot_un_plug": false,
+      "region": "EUROPE"
+    },
+    "@xmlns:ns2": "http://ws.api.profitbricks.com/"
+  }
+}

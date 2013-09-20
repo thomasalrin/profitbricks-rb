@@ -1,0 +1,9 @@
+{
+  "create_snapshot_return": {
+    "return": {
+      "request_id": "333985",
+      "snapshot_id": "c67f2247-2416-42d3-993f-752f3c189bce"
+    },
+    "@xmlns:ns2": "http://ws.api.profitbricks.com/"
+  }
+}

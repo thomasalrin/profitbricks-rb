@@ -3,7 +3,8 @@ module Profitbricks
   class AuthenticationError < StandardError; end
   NEED_PREFIX = [:create_nic, :create_load_balancer, :update_storage, :create_storage,
                  :update_data_center, :rom_drive, :update_nic, :create_server,
-                 :update_load_balancer, :connect_storage_to_server, :update_server]
+                 :update_load_balancer, :connect_storage_to_server, :update_server,
+                 :create_snapshot, :update_snapshot, :rollback_snapshot]
   # Configure the Profitbricks API client
   #
   # @see Profitbricks::Config
@@ -23,8 +24,8 @@ module Profitbricks
       globals.raise_errors true
       globals.log Profitbricks::Config.log
       globals.pretty_print_xml true
-      globals.open_timeout 5
-      globals.read_timeout 5
+      globals.open_timeout 10
+      globals.read_timeout 10
 
       # Looks like ssl verifycation works with current jruby
       #if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby' && !ENV['SSL_CERT_DIR']

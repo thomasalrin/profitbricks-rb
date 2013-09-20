@@ -1,0 +1,10 @@
+{
+  "rollback_snapshot_response": {
+    "return": {
+      "request_id": "335484",
+      "data_center_id": "aae67a49-8a53-46ba-a2d6-6d9e933c7a7d",
+      "data_center_version": "3"
+    },
+    "@xmlns:ns2": "http://ws.api.profitbricks.com/"
+  }
+}

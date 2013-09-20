@@ -13,6 +13,7 @@ require 'profitbricks/image'
 require 'profitbricks/storage'
 require 'profitbricks/ip_block'
 require 'profitbricks/rule'
+require 'profitbricks/snapshot'
 
 module Profitbricks
   VERSION = '1.0.3'

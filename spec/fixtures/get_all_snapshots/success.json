@@ -1,0 +1,49 @@
+{
+  "get_all_snapshots_response": {
+    "return": [
+      {
+        "snapshot_id": "77b618a5-18c3-49ec-8c5e-ef13dc905dce",
+        "description": "description",
+        "snapshot_size": "20480",
+        "snapshot_name": "test",
+        "provisioning_state": "AVAILABLE",
+        "bootable": true,
+        "os_type": "UNKNOWN",
+        "cpu_hot_plug": false,
+        "ram_hot_plug": false,
+        "nic_hot_plug": false,
+        "nic_hot_un_plug": false,
+        "region": "EUROPE"
+      },
+      {
+        "snapshot_id": "bb34813c-8e29-4894-baf8-c8cbfa4ba12f",
+        "description": "description",
+        "snapshot_size": "5120",
+        "snapshot_name": "test3",
+        "provisioning_state": "AVAILABLE",
+        "bootable": false,
+        "os_type": "UNKNOWN",
+        "cpu_hot_plug": false,
+        "ram_hot_plug": false,
+        "nic_hot_plug": false,
+        "nic_hot_un_plug": false,
+        "region": "EUROPE"
+      },
+      {
+        "snapshot_id": "c67f2247-2416-42d3-993f-752f3c189bce",
+        "description": "description",
+        "snapshot_size": "10240",
+        "snapshot_name": "test3",
+        "provisioning_state": "AVAILABLE",
+        "bootable": true,
+        "os_type": "UNKNOWN",
+        "cpu_hot_plug": false,
+        "ram_hot_plug": false,
+        "nic_hot_plug": false,
+        "nic_hot_un_plug": false,
+        "region": "EUROPE"
+      }
+    ],
+    "@xmlns:ns2": "http://ws.api.profitbricks.com/"
+  }
+}

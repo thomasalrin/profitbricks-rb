@@ -77,6 +77,7 @@ module Profitbricks
       # @option options [Fixnum] :lan_id Identifier of the target LAN > 0 that is to be connected to the specified virtual server. If no LAN exists for such ID, a new LAN with the given ID will be created. (required)
       # @option options [String] :ip Public/private IP address.
       # @option options [String] :name Names the NIC
+      # @option options [Boolean] :dhcpActive Toggles usage of ProfitBricks DHCP
       # @return [Nic] The created NIC
       def create(options = {})
         options[:nic_name] = options.delete :name if options[:name]
