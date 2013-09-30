@@ -60,7 +60,7 @@ module Profitbricks
       # The size of the snapshot will be the same as the size of the storage it was taken from independent of how much of it is in use. Any snapshot will be charged to your account and billed like an HD storage of the same size.
       #
       # @param [Hash] options parameters for the new NIC
-      # @option options [String] :storageId Identifier of the virtual storage for which a snapshot shall be created (required)
+      # @option options [String] :storage_id Identifier of the virtual storage for which a snapshot shall be created (required)
       # @option options [String] :name Name of the snapshot to be created
       # @option options [String] :description Additional field to provide customized information about the data in this snapshot
       # @return [Boolean] true on success
